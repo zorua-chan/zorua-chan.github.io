@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 // NWOT_FWOUND</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --glass-bg: rgba(255, 105, 180, 0.05);
+            --glass-border: rgba(255, 105, 180, 0.2);
+            --zoroark-crimson: #bd1c2a;
+            --pastel-pink: #ffb6c1;
+        }
+        
+        body { 
+            background-color: #070709; 
+            overflow: hidden; 
+            font-family: 'Courier New', monospace; 
+        }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 105, 180, 0.05);
+        }
+
+        /* CRT Scanline Overlay */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 6px 100%; 
+            z-index: 50; 
+            pointer-events: none;
+        }
+
+        /* Glitch and Cracking Textures (Can be replaced with raw asset imports later) */
+        /* To simulate shifting glowing mist and cracked glass, we will use animated gradients and CSS overlays */
+        
+        /* Shifting Glowing Mist */
+        .glowing-mist {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 105, 180, 0.1) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 70%, rgba(189, 28, 42, 0.1) 0%, transparent 60%),
+                        radial-gradient(circle at 50% 10%, rgba(0, 255, 255, 0.05) 0%, transparent 40%);
+            animation: shift-mist 15s infinite alternate ease-in-out;
+            z-index: 10;
+            pointer-events: none;
+        }
+        @keyframes shift-mist {
+            0% { transform: scale(1) translate(0,0); }
+            100% { transform: scale(1.1) translate(20px, 10px); }
+        }
+
+        /* Cracked Glass Effect overlay */
+        .cracked-glass {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 0.5px, transparent 0.5px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0.5px, transparent 0.5px);
+            background-size: 50px 50px;
+            filter: blur(1.5px);
+            z-index: 20;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* Typography Highlights and Effects */
+        .glow-title { text-shadow: 0 0 15px rgba(255, 105, 180, 0.6); }
+        .glow-zoroark { text-shadow: 0 0 12px rgba(189, 28, 42, 0.8); }
+        .glow-pastel { text-shadow: 0 0 8px var(--pastel-pink); }
+        
+        /* Headline Glitch Effect */
+        .glitch-title {
+            animation: glitch-header 0.8s infinite;
+        }
+        @keyframes glitch-header {
+            0% { text-shadow: 0.5px 0 0 rgba(255,0,0,0.5), -0.5px 0 0 rgba(0,255,255,0.5); }
+            20% { text-shadow: -1.5px 0 0 rgba(255,0,0,0.5), 1.5px 0 0 rgba(0,255,255,0.5); }
+            40% { text-shadow: 0.5px 0 0 rgba(255,0,0,0.5), -0.5px 0 0 rgba(0,255,255,0.5); }
+            60% { text-shadow: -1.5px 0 0 rgba(255,0,0,0.5), 1.5px 0 0 rgba(0,255,255,0.5); }
+            80% { text-shadow: 0.5px 0 0 rgba(255,0,0,0.5), -0.5px 0 0 rgba(0,255,255,0.5); }
+            100% { text-shadow: 0 0 15px rgba(255, 105, 180, 0.6); }
+        }
+
+        /* Particle Canvas */
+        #glitter-engine { position: absolute; top: 0; left: 0; z-index: -1; }
+        
+        /* Interactive Spawn Point group styling (whole text + yugo very small) */
+        .spawn-group {
+            position: fixed; bottom: 4px; right: 4px; z-index: 40; text-right;
+            transform: scale(0.6); /* User requested very, very small for the entire group */
+            transform-origin: bottom right;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center selection:bg-pink-500/30">
+
+    <canvas id="glitter-engine"></canvas>
+    <div class="scanlines"></div>
+    <div class="glowing-mist"></div>
+    <div class="cracked-glass"></div>
+
+    <main class="glass-panel w-[90%] max-w-3xl p-8 rounded-xl relative z-10 flex flex-col items-center justify-center gap-6 shadow-[0_0_40px_rgba(189,28,42,0.15)] text-center">
+        
+        <h1 class="text-2xl md:text-4xl font-extrabold text-pink-200 glow-title glitch-title tracking-widest uppercase mb-1">
+            error uwu - nwot fwound
+        </h1>
+
+        <div class="relative group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-red-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+            <img src="zoroark.png" alt="Zoroark Entity" class="relative w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-[0_0_15px_rgba(189,28,42,0.5)]">
+        </div>
+
+        <p class="text-[var(--zoroark-crimson)] font-bold text-base md:text-lg glow-zoroark tracking-wide mt-[-10px]">
+            Zoroark was too lazy to get to working <i class="text-[var(--pastel-pink)] italic glow-pastel font-serif">uwu</i>
+        </p>
+
+    </main>
+
+    <div class="spawn-group flex items-end">
+        
+        <div class="relative group">
+            
+            <a href="index.html" class="block cursor-pointer relative outline-none z-0 transition-transform duration-300 ease-in-out hover:scale-110 hover:drop-shadow-[0_0_15px_rgba(255,182,193,0.9)] hover:-translate-y-1">
+                <img src="yugocrazy2.png" alt="Return to Spawn" class="w-12 h-12 object-contain opacity-70 transition-opacity duration-300 hover:opacity-100">
+            </a>
+
+            <div class="absolute top-0 right-0 pointer-events-none flex flex-col items-end z-10" style="margin-top: -30px;">
+                <span class="text-[var(--pastel-pink)] text-[10px] md:text-xs font-mono glow-pastel rotate-[-5deg] mr-2">spawn point</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pastel-pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="glow-pastel opacity-80" style="transform: rotate(35deg);">
+                    <path d="M4 4 Q 12 0 20 8 M 16 4 L 20 8 L 16 12" />
+                </svg>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('glitter-engine');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particlesArray = [];
+        const colors = ['rgba(255, 105, 180, 0.8)', 'rgba(255, 182, 193, 0.8)', 'rgba(255, 77, 77, 0.8)', 'rgba(255, 255, 255, 0.5)'];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedY = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y > canvas.height) {
+                    this.y = 0 - this.size;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 150; i++) particlesArray.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        initParticles();
+        animateParticles();
+    </script>
+</body>
+</html>
