@@ -71,15 +71,15 @@
         <section class="flex items-center gap-5 bg-black/20 p-4 rounded-lg border border-pink-500/10">
             <img src="https://i.pinimg.com/564x/c5/b9/f8/c5b9f8b7c350557d9faf632e60b0cda0.jpg" alt="Entity Visual" class="w-20 h-20 rounded border border-pink-400/40 shadow-[0_0_15px_rgba(255,105,180,0.3)] object-cover">
             <div>
-                <h1 class="glow-text-red text-lg font-extrabold text-red-300">UNAUTHORIZED ENTITY DETECTED</h1>
-                <p class="text-sm text-pink-200/80 mt-1">Warning: Invalid clearance will result in immediate payload injection.</p>
+                <h1 class="glow-text-red text-lg font-extrabold text-red-300">SUSPICIOUS ENTITY DETECTED</h1>
+                <p class="text-sm text-pink-200/80 mt-1">Warning: Invalid code entry will result in a virtual slap ehehe~.</p>
                 <p class="text-xs text-pink-300/50 mt-1 italic">Hint: Inspect the architecture.</p>
             </div>
         </section>
 
         <div id="terminal-output" class="text-sm h-36 overflow-y-auto flex flex-col gap-1 text-pink-100/90 font-mono">
-            <p>> Handshake established across port 443.</p>
-            <p>> Awaiting clearance cipher...</p>
+            <p>> Handshake established across port 666.</p>
+            <p>> Awaiting secret code...</p>
         </div>
 
         <div class="flex items-center gap-3 mt-2">
@@ -177,17 +177,16 @@
                 printLog(command, "text-pink-300"); // Echo input
 
                 if (command === cipher) {
-                    printLog("ACCESS GRANTED. Overriding security protocols...", "text-green-400 glow-text-red");
+                    printLog("KITTY COUNCIL LET YA IN. Overriding kitty protocols...", "text-green-400 glow-text-red");
                     setTimeout(() => {
-                        // This will eventually route to hub.html
-                        printLog("Routing to main hub (Simulation complete).", "text-green-400");
+                        window.location.href = 'hub.html';
                     }, 1500);
                 } else {
                     attempts++;
                     const remaining = maxAttempts - attempts;
                     
                     if (remaining > 0) {
-                        printLog(`ERR: Invalid cipher. ${remaining} attempts remaining before payload injection.`, "text-red-400 glow-text-red");
+                        printLog(`ERR: Invalid cipher. ${remaining} tries remaining before uwuwuwu apocalypse.`, "text-red-400 glow-text-red");
                     } else {
                         printLog("CRITICAL FAILURE. Deploying Meowroll payload...", "text-red-500 font-bold glow-text-red");
                         inputField.disabled = true;
