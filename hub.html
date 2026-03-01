@@ -13,9 +13,13 @@
             --glass-bg: rgba(20, 10, 15, 0.65);
             --glass-border: rgba(255, 105, 180, 0.3);
             --neon-pink: #ff69b4;
-            --neon-accent: #ff1493;
             --terminal-font: 'Share Tech Mono', monospace;
             --whimsy-font: 'Comic Neue', cursive;
+            
+            /* Shinx Colors */
+            --shinx-blue: #3b82f6;
+            --shinx-yellow: #facc15;
+            --shinx-black: #0f172a;
         }
 
         body {
@@ -41,10 +45,7 @@
             content: " ";
             display: block;
             position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
             z-index: 9999;
             background-size: 100% 2px, 3px 100%;
@@ -62,7 +63,7 @@
             overflow: visible;
         }
 
-        /* Glitch Animation */
+        /* Glitch Title */
         .glitch-title {
             position: relative;
             animation: glitch-skew 3s infinite linear alternate-reverse;
@@ -70,20 +71,15 @@
         .glitch-title::before, .glitch-title::after {
             content: attr(data-text);
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
         }
         .glitch-title::before {
-            left: 2px;
-            text-shadow: -1px 0 #ff00c1;
+            left: 2px; text-shadow: -1px 0 #ff00c1;
             clip: rect(44px, 450px, 56px, 0);
             animation: glitch-anim 5s infinite linear alternate-reverse;
         }
         .glitch-title::after {
-            left: -2px;
-            text-shadow: -1px 0 #00fff9;
+            left: -2px; text-shadow: -1px 0 #00fff9;
             clip: rect(44px, 450px, 56px, 0);
             animation: glitch-anim2 5s infinite linear alternate-reverse;
         }
@@ -125,58 +121,104 @@
             transform: scale(1.05);
             z-index: 100 !important;
         }
-        /* Removed border-radius and border from here as requested */
         .sticker img {
-            width: 100%;
-            height: auto;
-            display: block;
+            width: 100%; height: auto; display: block;
         }
 
-        /* Luxray Container */
+        /* Luxray */
         .luxray-container {
-            position: absolute;
-            bottom: -10px;
-            right: 0px; /* Right side */
-            z-index: 20;
-            pointer-events: none;
-            width: 200px;
+            position: absolute; bottom: -10px; right: 0px;
+            z-index: 20; pointer-events: none; width: 200px;
         }
 
-        /* Lore Box */
+        /* Lore */
         .lore-matrix {
-            position: relative;
-            z-index: 10;
+            position: relative; z-index: 10;
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 105, 180, 0.2);
             backdrop-filter: blur(8px);
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Button */
-        .btn-enter {
-            background: linear-gradient(45deg, #ff00cc, #333399);
-            background-size: 200% 200%;
-            animation: gradient-anim 3s ease infinite;
-            transition: all 0.3s ease;
-            z-index: 30;
+        /* 
+           NEW BUTTON STYLE: LIQUID GLASS SHINXISM 
+        */
+        .btn-shinx {
             position: relative;
-        }
-        .btn-enter:hover {
-            transform: scale(1.05) rotate(-2deg);
-            box-shadow: 0 0 30px rgba(255, 0, 204, 0.6);
+            z-index: 30;
+            background: var(--shinx-black);
+            border-radius: 9999px; /* Pill shape */
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Mask the rotating gradient */
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            transition: transform 0.3s ease;
         }
 
-        @keyframes gradient-anim {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* The rotating liquid gradient */
+        .btn-shinx::before {
+            content: '';
+            position: absolute;
+            height: 150%;
+            width: 150%;
+            top: -25%;
+            left: -25%;
+            background: conic-gradient(
+                transparent, 
+                var(--shinx-blue), 
+                transparent, 
+                var(--shinx-yellow), 
+                transparent
+            );
+            animation: rotate-liquid 3s linear infinite;
         }
 
+        /* The inner glass layer */
+        .btn-shinx::after {
+            content: '';
+            position: absolute;
+            inset: 3px; /* Thickness of the glass border */
+            background: rgba(15, 23, 42, 0.85); /* Dark inner core */
+            border-radius: 9999px;
+            backdrop-filter: blur(4px); /* Glass effect */
+            z-index: 1;
+        }
+
+        /* Button Text sits on top of ::after */
+        .btn-shinx span {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.6); /* Yellow glow text */
+        }
+
+        .btn-shinx:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(59, 130, 246, 0.5), 0 0 10px rgba(250, 204, 21, 0.4);
+        }
+
+        .btn-shinx:hover::before {
+            animation-duration: 1.5s; /* Spin faster on hover */
+        }
+
+        @keyframes rotate-liquid {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Misc Animations */
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(var(--rot)); }
             50% { transform: translateY(-10px) rotate(calc(var(--rot) + 2deg)); }
         }
-
         .cursor-blink {
             animation: blink 1s step-end infinite;
         }
@@ -206,53 +248,40 @@
             </div>
         </header>
 
-        <!-- STICKERS (Size Adjusted) -->
-        
-        <!-- Croatia (Bigger) -->
+        <!-- STICKERS -->
         <div class="sticker w-36 h-36 md:w-48 md:h-48 flex items-center justify-center" style="--rot: 15deg;">
             <img src="croatia.png" alt="Croatia" draggable="false">
         </div>
-
-        <!-- Gcat (Standard) -->
         <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: -12deg;">
             <img src="gcat.png" alt="Gcat" draggable="false">
         </div>
-
-        <!-- Pythowo (Smaller) -->
         <div class="sticker w-24 h-24 md:w-32 md:h-32 flex items-center justify-center" style="--rot: 8deg;">
             <img src="pythowo.png" alt="Pythowo" draggable="false">
         </div>
 
-
         <!-- LEFT COLUMN: LORE -->
         <section class="col-span-1 md:col-span-8">
             <div class="lore-matrix rounded-2xl p-5 md:p-6 text-pink-100/90 text-sm md:text-base leading-relaxed flex flex-col gap-3">
-                
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>balkanese tomboy :P</p>
                 </div>
-                
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>good at rimac simping and still lazy writing codes in snek c:</p>
                 </div>
-                
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>aspiring pentester and malware analyst</p>
                 </div>
-                
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>lover of chocolate</p>
                 </div>
-
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>cats are great meow</p>
                 </div>
-                
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>founder of shinxism cult - do study or procastrinate, thats da question<span class="cursor-blink">_</span></p>
@@ -263,24 +292,28 @@
         <!-- RIGHT COLUMN: CONTROLS -->
         <section class="col-span-1 md:col-span-4 relative flex flex-col items-center justify-start min-h-[250px] border border-dashed border-pink-500/20 rounded-2xl bg-black/20 overflow-hidden py-6">
             
-            <!-- Luxray (Bottom Right) -->
+            <!-- Luxray -->
             <div class="luxray-container">
                 <img src="luxray.png" alt="Luxray" style="width: 100%; filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));">
             </div>
 
-            <!-- CTA Content (Moved Higher via justify-start and mb-16) -->
+            <!-- CTA Content -->
             <div class="z-30 relative flex flex-col items-center justify-center gap-3 mb-16 mt-4">
                 <div class="flex flex-col items-center animate-bounce">
-                    <span class="text-pink-300 font-bold tracking-widest text-xs bg-black/50 px-3 py-1 rounded-full border border-pink-500/30 mb-2">
+                    <span class="text-blue-300 font-bold tracking-widest text-xs bg-black/50 px-3 py-1 rounded-full border border-blue-500/30 mb-2">
                         Wanna join? :P
                     </span>
-                    <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#ffb6c1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Changed arrow color to blue/yellow theme -->
+                    <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
                     </svg>
                 </div>
 
-                <a href="shinxism.html" class="btn-enter text-white text-xl font-black px-8 py-3 rounded-full border-2 border-white/20 shadow-lg tracking-widest uppercase flex items-center gap-2 group">
-                    Enter <span class="group-hover:translate-x-1 transition-transform">-></span>
+                <!-- NEW LIQUID BUTTON -->
+                <a href="shinxism.html" class="btn-shinx px-10 py-3">
+                    <span class="text-xl">
+                        Enter <span style="margin-left:5px;">-></span>
+                    </span>
                 </a>
             </div>
 
@@ -302,7 +335,6 @@
             const BOUNCE = 0.7;
             
             stickers.forEach(sticker => {
-                // Random initial positions
                 const randX = Math.random() * 70 + 5; 
                 const randY = Math.random() * 50 + 10;
                 
