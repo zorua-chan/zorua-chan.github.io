@@ -3,200 +3,450 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL // SHINXISM_PROXY</title>
+    <title>HUB // CENTRAL_NEXUS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass-bg: rgba(255, 105, 180, 0.05);
-            --glass-border: rgba(255, 105, 180, 0.2);
-            --neon-pink: rgba(255, 105, 180, 0.8);
-            --neon-red: rgba(255, 77, 77, 0.8);
-        }
-        
-        body { 
-            background-color: #070709; 
-            overflow: hidden; 
-            font-family: 'Courier New', monospace; 
-            color: #fce7f3; /* text-pink-100 */
-        }
-
-        /* Glassmorphism Panel */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 105, 180, 0.05);
+            --glass-bg: rgba(20, 10, 15, 0.65);
+            --glass-border: rgba(255, 105, 180, 0.3);
+            --neon-pink: #ff69b4;
+            --terminal-font: 'Share Tech Mono', monospace;
+            --whimsy-font: 'Comic Neue', cursive;
+            
+            /* Shinx Colors */
+            --shinx-blue: #3b82f6;
+            --shinx-yellow: #facc15;
+            --shinx-black: #0f172a;
         }
 
-        /* CRT Scanline Overlay */
-        .scanlines {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 4px, 6px 100%; 
-            z-index: 50; 
+        body {
+            background-color: #050505;
+            background-image: 
+                linear-gradient(rgba(255, 105, 180, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 105, 180, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            font-family: var(--terminal-font);
+            color: #fce7f3;
+            min-height: 100vh;
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* CRT Effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 9999;
+            background-size: 100% 2px, 3px 100%;
             pointer-events: none;
         }
 
-        /* Typography Highlights */
-        .glow-text-pink { text-shadow: 0 0 10px var(--neon-pink); }
-        .glow-text-red { text-shadow: 0 0 10px var(--neon-red); }
-        
-        /* Particle Canvas */
-        #glitter-engine { position: absolute; top: 0; left: 0; z-index: -1; }
-        
-        /* Custom Scrollbar for Terminal Output */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.3); border-radius: 3px; }
+        .terminal-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 0 50px rgba(255, 20, 147, 0.15), inset 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 10;
+            overflow: visible;
+        }
+
+        /* Glitch Title */
+        .glitch-title {
+            position: relative;
+            animation: glitch-skew 3s infinite linear alternate-reverse;
+        }
+        .glitch-title::before, .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+        .glitch-title::before {
+            left: 2px; text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch-title::after {
+            left: -2px; text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(15px, 9999px, 81px, 0); }
+            5% { clip: rect(68px, 9999px, 8px, 0); }
+            10% { clip: rect(6px, 9999px, 14px, 0); }
+            15% { clip: rect(98px, 9999px, 4px, 0); }
+            100% { clip: rect(24px, 9999px, 66px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 10px, 0); }
+            5% { clip: rect(34px, 9999px, 89px, 0); }
+            10% { clip: rect(10px, 9999px, 2px, 0); }
+            15% { clip: rect(54px, 9999px, 21px, 0); }
+            100% { clip: rect(12px, 9999px, 66px, 0); }
+        }
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            10% { transform: skew(-1deg); }
+            20% { transform: skew(0deg); }
+            100% { transform: skew(0deg); }
+        }
+
+        /* Stickers */
+        .sticker {
+            position: absolute;
+            cursor: grab;
+            z-index: 50;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
+            transition: transform 0.1s;
+            user-select: none;
+            touch-action: none;
+            animation: float 6s ease-in-out infinite;
+        }
+        .sticker:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            z-index: 100 !important;
+        }
+        .sticker img {
+            width: 100%; height: auto; display: block;
+        }
+
+        /* Luxray - Lifted Up */
+        .luxray-container {
+            position: absolute; 
+            bottom: 25px; /* Moved up from -10px to show paws */
+            right: 0px;
+            z-index: 20; 
+            pointer-events: none; 
+            width: 200px;
+        }
+
+        /* Lore */
+        .lore-matrix {
+            position: relative; z-index: 10;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            backdrop-filter: blur(8px);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Liquid Button */
+        .btn-shinx {
+            position: relative;
+            z-index: 30;
+            background: var(--shinx-black);
+            border-radius: 9999px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .btn-shinx::before {
+            content: '';
+            position: absolute;
+            height: 150%; width: 150%;
+            top: -25%; left: -25%;
+            background: conic-gradient(transparent, var(--shinx-blue), transparent, var(--shinx-yellow), transparent);
+            animation: rotate-liquid 3s linear infinite;
+        }
+        .btn-shinx::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: rgba(15, 23, 42, 0.85);
+            border-radius: 9999px;
+            backdrop-filter: blur(4px);
+            z-index: 1;
+        }
+        .btn-shinx span {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
+        }
+        .btn-shinx:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(59, 130, 246, 0.5), 0 0 10px rgba(250, 204, 21, 0.4);
+        }
+        .btn-shinx:hover::before {
+            animation-duration: 1.5s;
+        }
+
+        @keyframes rotate-liquid {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Misc */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(var(--rot)); }
+            50% { transform: translateY(-10px) rotate(calc(var(--rot) + 2deg)); }
+        }
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
     </style>
 </head>
-<body class="h-screen w-screen flex items-center justify-center selection:bg-pink-500/30">
+<body class="selection:bg-pink-500/50 selection:text-white">
 
-    <canvas id="glitter-engine"></canvas>
-    <div class="scanlines"></div>
-
-    <main class="glass-panel w-[90%] max-w-2xl p-6 rounded-xl relative z-10 flex flex-col gap-5 shadow-[0_0_40px_rgba(255,77,77,0.1)]">
+    <main class="terminal-box w-[95%] max-w-6xl p-6 md:p-8 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8" id="main-terminal">
         
-        <header class="flex justify-between items-center border-b border-pink-500/20 pb-3">
-            <span class="text-xs text-red-400 tracking-widest font-bold glow-text-red">SECURE_SHELL // SHINXISM</span>
-            <div class="flex gap-2">
-                <div class="w-3 h-3 rounded-full bg-red-500/60 shadow-[0_0_8px_rgba(255,77,77,0.8)]"></div>
-                <div class="w-3 h-3 rounded-full bg-pink-500/60 shadow-[0_0_8px_rgba(255,105,180,0.8)]"></div>
-                <div class="w-3 h-3 rounded-full bg-pink-300/60"></div>
+        <!-- HEADER -->
+        <header class="col-span-1 md:col-span-12 flex flex-col md:flex-row items-center gap-6 border-b border-pink-500/30 pb-4 mb-2">
+            <div class="relative group flex-shrink-0">
+                <div class="absolute inset-0 bg-pink-500 blur-lg opacity-40 group-hover:opacity-60 transition duration-500 rounded-lg"></div>
+                <img src="zoruapfp.jpg" alt="Profile" class="relative w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover border-2 border-pink-400 rotate-3">
+            </div>
+            
+            <div class="text-center md:text-left flex-1">
+                <div class="flex items-center justify-center md:justify-start gap-2 text-pink-400 text-xs tracking-[0.3em] mb-1 opacity-80">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    SYSTEM ONLINE
+                </div>
+                <h1 class="glitch-title text-4xl md:text-6xl font-extrabold text-white tracking-tighter" data-text="ZORUA // SHINX">
+                    ZORUA // SHINX
+                </h1>
             </div>
         </header>
 
-        <section class="flex items-center gap-5 bg-black/20 p-4 rounded-lg border border-pink-500/10">
-            <img src="https://i.pinimg.com/564x/c5/b9/f8/c5b9f8b7c350557d9faf632e60b0cda0.jpg" alt="Entity Visual" class="w-20 h-20 rounded border border-pink-400/40 shadow-[0_0_15px_rgba(255,105,180,0.3)] object-cover">
-            <div>
-                <h1 class="glow-text-red text-lg font-extrabold text-red-300">UNAUTHORIZED ENTITY DETECTED</h1>
-                <p class="text-sm text-pink-200/80 mt-1">Warning: Invalid clearance will result in immediate payload injection.</p>
-                <p class="text-xs text-pink-300/50 mt-1 italic">Hint: Inspect the architecture.</p>
+        <!-- STICKERS -->
+        <div class="sticker w-36 h-36 md:w-48 md:h-48 flex items-center justify-center" style="--rot: 15deg;">
+            <img src="croatia.png" alt="Croatia" draggable="false">
+        </div>
+        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: -12deg;">
+            <img src="gcat.png" alt="Gcat" draggable="false">
+        </div>
+        <div class="sticker w-24 h-24 md:w-32 md:h-32 flex items-center justify-center" style="--rot: 8deg;">
+            <img src="pythowo.png" alt="Pythowo" draggable="false">
+        </div>
+
+        <!-- LEFT COLUMN: LORE -->
+        <section class="col-span-1 md:col-span-8">
+            <div class="lore-matrix rounded-2xl p-5 md:p-6 text-pink-100/90 text-sm md:text-base leading-relaxed flex flex-col gap-3">
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p>balkanese tomboy :P</p>
+                </div>
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p>good at rimac simping and still lazy writing codes in snek c:</p>
+                </div>
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p>aspiring pentester and malware analyst</p>
+                </div>
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p>lover of chocolate</p>
+                </div>
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p>cats are great meow</p>
+                </div>
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p>founder of shinxism cult - do study or procastrinate, thats da question<span class="cursor-blink">_</span></p>
+                </div>
             </div>
         </section>
 
-        <div id="terminal-output" class="text-sm h-36 overflow-y-auto flex flex-col gap-1 text-pink-100/90 font-mono">
-            <p>> Handshake established across port 443.</p>
-            <p>> Awaiting clearance cipher...</p>
-        </div>
+        <!-- RIGHT COLUMN: CONTROLS -->
+        <section class="col-span-1 md:col-span-4 relative flex flex-col items-center justify-start min-h-[250px] border border-dashed border-pink-500/20 rounded-2xl bg-black/20 overflow-hidden py-6">
+            
+            <!-- Luxray -->
+            <div class="luxray-container">
+                <img src="luxray.png" alt="Luxray" style="width: 100%; filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));">
+            </div>
 
-        <div class="flex items-center gap-3 mt-2">
-            <span class="text-red-400 font-bold glow-text-red">root@proxy:~#</span>
-            <input type="text" id="cmd-input" class="bg-transparent border-none outline-none text-pink-100 flex-1 caret-pink-500 font-mono text-sm" autocomplete="off" spellcheck="false" autofocus>
-        </div>
+            <!-- CTA Content (Moved Higher) -->
+            <div class="z-30 relative flex flex-col items-center justify-center gap-2 mt-2 mb-2">
+                
+                <div class="flex flex-col items-center animate-bounce">
+                    <span class="text-blue-300 font-bold tracking-widest text-xs bg-black/50 px-3 py-1 rounded-full border border-blue-500/30 mb-2">
+                        Wanna join? :P
+                    </span>
+                    
+                    <!-- Hand-drawn Error Arrow -->
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.6));">
+                        <!-- Wobbly Shaft -->
+                        <path d="M 22 0 Q 18 6 23 12 Q 17 18 21 24" />
+                        <!-- Jagged Head -->
+                        <path d="M 10 16 L 22 28 L 34 14" />
+                    </svg>
+                </div>
+
+                <!-- LIQUID BUTTON -->
+                <a href="shinxism.html" class="btn-shinx px-10 py-3">
+                    <span class="text-xl">
+                        Enter <span style="margin-left:5px;">-></span>
+                    </span>
+                </a>
+            </div>
+
+        </section>
 
     </main>
 
+    <div class="text-pink-900 text-xs mt-8 font-mono">:: SCROLL DOWN FOR MORE DATA ::</div>
+
     <script>
-        /** * MODULE: Glitter Particle Engine
-         * Optimized hardware-accelerated canvas rendering.
+        /**
+         * Physics Engine
          */
-        const canvas = document.getElementById('glitter-engine');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const particlesArray = [];
-        const colors = ['rgba(255, 105, 180, 0.8)', 'rgba(255, 182, 193, 0.8)', 'rgba(255, 77, 77, 0.8)', 'rgba(255, 255, 255, 0.5)'];
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height - canvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedY = Math.random() * 1.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.opacity = Math.random() * 0.5 + 0.2;
-            }
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                if (this.y > canvas.height) {
-                    this.y = 0 - this.size;
-                    this.x = Math.random() * canvas.width;
-                }
-            }
-            draw() {
-                ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            for (let i = 0; i < 150; i++) particlesArray.push(new Particle());
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-            }
-            requestAnimationFrame(animateParticles);
-        }
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        initParticles();
-        animateParticles();
-
-        /** * MODULE: Gatekeeper Security Logic
-         * Handles OSINT challenge verification and payload injection.
-         */
-        const inputField = document.getElementById('cmd-input');
-        const outputLog = document.getElementById('terminal-output');
-        let attempts = 0;
-        const maxAttempts = 3;
-        const cipher = "chaotic_uwu";
-        const meowrollPayload = "https://www.youtube.com/watch?v=hvL1339luv0";
-
-        function printLog(text, colorClass = "text-pink-100/90") {
-            const p = document.createElement('p');
-            p.className = colorClass;
-            p.textContent = `> ${text}`;
-            outputLog.appendChild(p);
-            outputLog.scrollTop = outputLog.scrollHeight;
-        }
-
-        inputField.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                const command = this.value.trim().toLowerCase();
-                this.value = '';
-
-                if (command === '') return;
+        document.addEventListener('DOMContentLoaded', () => {
+            const stickers = document.querySelectorAll('.sticker');
+            const terminal = document.getElementById('main-terminal');
+            
+            const FRICTION = 0.94;
+            const BOUNCE = 0.7;
+            
+            stickers.forEach(sticker => {
+                const randX = Math.random() * 70 + 5; 
+                const randY = Math.random() * 50 + 10;
                 
-                printLog(command, "text-pink-300"); // Echo input
+                sticker.style.left = `${randX}%`;
+                sticker.style.top = `${randY}%`;
+                
+                const state = {
+                    isDragging: false,
+                    startX: 0, startY: 0,
+                    initialLeft: 0, initialTop: 0,
+                    vx: 0, vy: 0,
+                    lastX: 0, lastY: 0,
+                    lastTime: 0
+                };
 
-                if (command === cipher) {
-                    printLog("ACCESS GRANTED. Overriding kitty safety protocols...ACCESS GRANTED", "text-green-400 glow-text-red");
-                    setTimeout(() => {
-                        // This will eventually route to hub.html
-                        window.location.href = 'hub.html';
-                    }, 1500);
-                } else {
-                    attempts++;
-                    const remaining = maxAttempts - attempts;
+                const startDrag = (e) => {
+                    e.preventDefault();
+                    state.isDragging = true;
                     
-                    if (remaining > 0) {
-                        printLog(`ERR: Invalid cipher. ${remaining} tries remaining before uwu apocalypse :3`, "text-red-400 glow-text-red");
-                    } else {
-                        printLog("CRITICAL FAILURE. Deploying the ultimate final boss...", "text-red-500 font-bold glow-text-red");
-                        inputField.disabled = true;
-                        setTimeout(() => {
-                            window.location.href = meowrollPayload;
-                        }, 1200);
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                    state.startX = clientX;
+                    state.startY = clientY;
+                    
+                    const rect = sticker.getBoundingClientRect();
+                    const parentRect = terminal.getBoundingClientRect();
+                    
+                    state.initialLeft = rect.left - parentRect.left;
+                    state.initialTop = rect.top - parentRect.top;
+                    
+                    state.vx = 0; state.vy = 0;
+                    state.lastX = clientX; state.lastY = clientY;
+                    state.lastTime = performance.now();
+
+                    sticker.style.animation = 'none';
+                    sticker.style.transition = 'none';
+                };
+
+                const moveDrag = (e) => {
+                    if (!state.isDragging) return;
+                    e.preventDefault();
+
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                    const deltaX = clientX - state.startX;
+                    const deltaY = clientY - state.startY;
+
+                    let newLeft = state.initialLeft + deltaX;
+                    let newTop = state.initialTop + deltaY;
+
+                    const maxLeft = terminal.offsetWidth - sticker.offsetWidth;
+                    const maxTop = terminal.offsetHeight - sticker.offsetHeight;
+
+                    if (newLeft < 0) newLeft = 0;
+                    if (newLeft > maxLeft) newLeft = maxLeft;
+                    if (newTop < 0) newTop = 0;
+                    if (newTop > maxTop) newTop = maxTop;
+
+                    sticker.style.left = `${newLeft}px`;
+                    sticker.style.top = `${newTop}px`;
+
+                    const now = performance.now();
+                    const dt = now - state.lastTime;
+                    if (dt > 0) {
+                        state.vx = (clientX - state.lastX) / dt * 15;
+                        state.vy = (clientY - state.lastY) / dt * 15;
                     }
-                }
-            }
+                    
+                    state.lastX = clientX; state.lastY = clientY;
+                    state.lastTime = now;
+                };
+
+                const endDrag = () => {
+                    if (!state.isDragging) return;
+                    state.isDragging = false;
+                    requestAnimationFrame(momentumLoop);
+                };
+
+                const momentumLoop = () => {
+                    if (state.isDragging) return;
+
+                    state.vx *= FRICTION;
+                    state.vy *= FRICTION;
+
+                    if (Math.abs(state.vx) < 0.1 && Math.abs(state.vy) < 0.1) {
+                        state.vx = 0; state.vy = 0;
+                        sticker.style.animation = 'float 6s ease-in-out infinite';
+                        return;
+                    }
+
+                    let currentLeft = parseFloat(sticker.style.left) || 0;
+                    let currentTop = parseFloat(sticker.style.top) || 0;
+
+                    let nextLeft = currentLeft + state.vx;
+                    let nextTop = currentTop + state.vy;
+
+                    const maxLeft = terminal.offsetWidth - sticker.offsetWidth;
+                    const maxTop = terminal.offsetHeight - sticker.offsetHeight;
+
+                    if (nextLeft <= 0) { nextLeft = 0; state.vx = -state.vx * BOUNCE; }
+                    else if (nextLeft >= maxLeft) { nextLeft = maxLeft; state.vx = -state.vx * BOUNCE; }
+
+                    if (nextTop <= 0) { nextTop = 0; state.vy = -state.vy * BOUNCE; }
+                    else if (nextTop >= maxTop) { nextTop = maxTop; state.vy = -state.vy * BOUNCE; }
+
+                    sticker.style.left = `${nextLeft}px`;
+                    sticker.style.top = `${nextTop}px`;
+
+                    requestAnimationFrame(momentumLoop);
+                };
+
+                sticker.addEventListener('mousedown', startDrag);
+                window.addEventListener('mousemove', moveDrag);
+                window.addEventListener('mouseup', endDrag);
+
+                sticker.addEventListener('touchstart', startDrag, { passive: false });
+                window.addEventListener('touchmove', moveDrag, { passive: false });
+                window.addEventListener('touchend', endDrag);
+            });
         });
     </script>
 </body>
