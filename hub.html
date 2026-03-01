@@ -26,7 +26,7 @@
             background-size: 30px 30px;
             font-family: var(--terminal-font);
             color: #fce7f3;
-            min-height: 100vh; /* Allows scrolling if content is added below */
+            min-height: 100vh;
             padding-top: 4rem;
             padding-bottom: 4rem;
             display: flex;
@@ -40,7 +40,7 @@
         body::after {
             content: " ";
             display: block;
-            position: fixed; /* Fixed overlay for effect */
+            position: fixed;
             top: 0;
             left: 0;
             bottom: 0;
@@ -59,8 +59,7 @@
             box-shadow: 0 0 50px rgba(255, 20, 147, 0.15), inset 0 0 20px rgba(0,0,0,0.5);
             position: relative;
             z-index: 10;
-            overflow: visible; /* Allow stickers to overlap slightly */
-            /* Width set to max-w-6xl for Widescreen look */
+            overflow: visible;
         }
 
         /* Glitch Animation */
@@ -134,14 +133,19 @@
             border: 2px solid rgba(255,255,255,0.1);
         }
 
-        /* Luxray Container - Bottom Right */
+        /* Specific Sizes for Stickers */
+        .sticker-lg { width: 160px; height: 160px; } /* Croatia (Big) */
+        .sticker-md { width: 140px; height: 140px; } /* Gcat (Normal) */
+        .sticker-sm { width: 100px; height: 100px; } /* Pythowo (Small) */
+
+        /* Luxray Container - Next to button */
         .luxray-container {
             position: absolute;
-            bottom: -15px; /* Peeking out slightly */
-            right: -10px;  /* Moved to right */
+            bottom: 10px; /* Aligned to bottom of the section */
+            right: 10px;  /* To the right side */
             z-index: 20;
             pointer-events: none;
-            width: 200px; /* Slightly smaller to fit corner */
+            width: 180px;
         }
 
         /* Lore Box */
@@ -152,7 +156,6 @@
             border: 1px solid rgba(255, 105, 180, 0.2);
             backdrop-filter: blur(8px);
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-            /* Reduced padding to save height */
         }
 
         /* Button */
@@ -161,7 +164,7 @@
             background-size: 200% 200%;
             animation: gradient-anim 3s ease infinite;
             transition: all 0.3s ease;
-            z-index: 30; /* Above Luxray */
+            z-index: 30;
             position: relative;
         }
         .btn-enter:hover {
@@ -189,17 +192,9 @@
 </head>
 <body class="selection:bg-pink-500/50 selection:text-white">
 
-    <!-- 
-       Layout: Grid 
-       Mobile: 1 Column
-       Desktop: 12 Columns
-       Header: Spans all 12
-       Lore: Spans 8 (Left)
-       Controls/Luxray: Spans 4 (Right) 
-    -->
     <main class="terminal-box w-[95%] max-w-6xl p-6 md:p-8 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8" id="main-terminal">
         
-        <!-- HEADER (Spans Full Width) -->
+        <!-- HEADER -->
         <header class="col-span-1 md:col-span-12 flex flex-col md:flex-row items-center gap-6 border-b border-pink-500/30 pb-4 mb-2">
             <div class="relative group flex-shrink-0">
                 <div class="absolute inset-0 bg-pink-500 blur-lg opacity-40 group-hover:opacity-60 transition duration-500 rounded-lg"></div>
@@ -217,64 +212,67 @@
             </div>
         </header>
 
-        <!-- STICKERS (Scattered) -->
-        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: 15deg;">
+        <!-- STICKERS (Scattered with new sizes) -->
+        <!-- Croatia (Large) -->
+        <div class="sticker sticker-lg flex items-center justify-center" style="--rot: 15deg;">
             <img src="croatia.png" alt="Croatia" draggable="false">
         </div>
 
-        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: -12deg;">
+        <!-- Gcat (Medium) -->
+        <div class="sticker sticker-md flex items-center justify-center" style="--rot: -12deg;">
             <img src="gcat.png" alt="Gcat" draggable="false">
         </div>
 
-        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: 8deg;">
+        <!-- Pythowo (Small) -->
+        <div class="sticker sticker-sm flex items-center justify-center" style="--rot: 8deg;">
             <img src="pythowo.png" alt="Pythowo" draggable="false">
         </div>
 
-        <!-- LEFT COLUMN: LORE (Spans 8 cols) -->
+        <!-- LEFT COLUMN: LORE -->
         <section class="col-span-1 md:col-span-8">
             <div class="lore-matrix rounded-2xl p-5 md:p-6 text-pink-100/90 text-sm md:text-base leading-relaxed flex flex-col gap-3">
                 
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
-                    <p><span class="text-pink-400">identity:</span> balkanese tomboy :P</p>
+                    <p>balkanese tomboy :P</p>
                 </div>
                 
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
-                    <p><span class="text-pink-400">skills (hehe):</span> good at rimac simping and lazy coding in snek c:</p>
+                    <p>good at rimac simping and still lazy writing codes in snek c:</p>
                 </div>
                 
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
-                    <p><span class="text-pink-400">future:</span> aspiring pentester and malware analyst</p>
+                    <p>aspiring pentester and malware analyst</p>
                 </div>
                 
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
-                    <p><span class="text-pink-400">fav:</span> lover of chocolate</p>
+                    <p>lover of chocolate</p>
                 </div>
 
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
-                    <p><span class="text-pink-400">fact:</span> cats are great meowww</p>
+                    <p>cats are great meow</p>
                 </div>
                 
                 <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
                     <span class="text-pink-500 font-bold mt-1">></span>
-                    <p><span class="text-pink-400">faction:</span> founder of shinxism cult - do study or procrastinate, that's da question<span class="cursor-blink">_</span></p>
+                    <p>founder of shinxism cult - do study or procastrinate, thats da question<span class="cursor-blink">_</span></p>
                 </div>
             </div>
         </section>
 
-        <!-- RIGHT COLUMN: CONTROLS (Spans 4 cols) -->
+        <!-- RIGHT COLUMN: CONTROLS -->
         <section class="col-span-1 md:col-span-4 relative flex flex-col items-center justify-center min-h-[250px] border border-dashed border-pink-500/20 rounded-2xl bg-black/20 overflow-hidden">
             
-            <!-- Luxray (Static Bottom Right of this column) -->
+            <!-- Luxray (Next to button, bottom right) -->
             <div class="luxray-container">
                 <img src="luxray.png" alt="Luxray" style="width: 100%; filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));">
             </div>
 
-            <!-- CTA Content (Floating above Luxray) -->
+            <!-- CTA Content (Centered) -->
             <div class="z-30 relative flex flex-col items-center justify-center gap-3 mt-4">
                 <div class="flex flex-col items-center animate-bounce">
                     <span class="text-pink-300 font-bold tracking-widest text-xs bg-black/50 px-3 py-1 rounded-full border border-pink-500/30 mb-2">
@@ -307,7 +305,6 @@
             
             stickers.forEach(sticker => {
                 // Initial Scattered Positioning
-                // Since layout is wide, we spread them more horizontally
                 const randX = Math.random() * 70 + 5; 
                 const randY = Math.random() * 50 + 10;
                 
