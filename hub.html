@@ -13,7 +13,6 @@
             --glass-bg: rgba(20, 10, 15, 0.65);
             --glass-border: rgba(255, 105, 180, 0.3);
             --neon-pink: #ff69b4;
-            --neon-accent: #ff1493;
             --terminal-font: 'Share Tech Mono', monospace;
             --whimsy-font: 'Comic Neue', cursive;
         }
@@ -41,10 +40,7 @@
             content: " ";
             display: block;
             position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
             z-index: 9999;
             background-size: 100% 2px, 3px 100%;
@@ -59,7 +55,7 @@
             box-shadow: 0 0 50px rgba(255, 20, 147, 0.15), inset 0 0 20px rgba(0,0,0,0.5);
             position: relative;
             z-index: 10;
-            overflow: visible;
+            overflow: visible; 
         }
 
         /* Glitch Animation */
@@ -70,10 +66,7 @@
         .glitch-title::before, .glitch-title::after {
             content: attr(data-text);
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
         }
         .glitch-title::before {
             left: 2px;
@@ -90,26 +83,26 @@
 
         @keyframes glitch-anim {
             0% { clip: rect(15px, 9999px, 81px, 0); }
-            5% { clip: rect(68px, 9999px, 8px, 0); }
-            10% { clip: rect(6px, 9999px, 14px, 0); }
-            15% { clip: rect(98px, 9999px, 4px, 0); }
+            20% { clip: rect(68px, 9999px, 8px, 0); }
+            40% { clip: rect(6px, 9999px, 14px, 0); }
+            60% { clip: rect(98px, 9999px, 4px, 0); }
             100% { clip: rect(24px, 9999px, 66px, 0); }
         }
         @keyframes glitch-anim2 {
             0% { clip: rect(65px, 9999px, 10px, 0); }
-            5% { clip: rect(34px, 9999px, 89px, 0); }
-            10% { clip: rect(10px, 9999px, 2px, 0); }
-            15% { clip: rect(54px, 9999px, 21px, 0); }
+            20% { clip: rect(34px, 9999px, 89px, 0); }
+            40% { clip: rect(10px, 9999px, 2px, 0); }
+            60% { clip: rect(54px, 9999px, 21px, 0); }
             100% { clip: rect(12px, 9999px, 66px, 0); }
         }
         @keyframes glitch-skew {
             0% { transform: skew(0deg); }
-            10% { transform: skew(-1deg); }
-            20% { transform: skew(0deg); }
+            20% { transform: skew(-1deg); }
+            40% { transform: skew(0deg); }
             100% { transform: skew(0deg); }
         }
 
-        /* Stickers */
+        /* Stickers - No Borders */
         .sticker {
             position: absolute;
             cursor: grab;
@@ -129,23 +122,23 @@
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 8px;
-            border: 2px solid rgba(255,255,255,0.1);
+            /* Removed borders and radius as requested */
         }
 
-        /* Specific Sizes for Stickers */
-        .sticker-lg { width: 160px; height: 160px; } /* Croatia (Big) */
-        .sticker-md { width: 140px; height: 140px; } /* Gcat (Normal) */
-        .sticker-sm { width: 100px; height: 100px; } /* Pythowo (Small) */
-
-        /* Luxray Container - Next to button */
-        .luxray-container {
-            position: absolute;
-            bottom: 10px; /* Aligned to bottom of the section */
-            right: 10px;  /* To the right side */
-            z-index: 20;
-            pointer-events: none;
-            width: 180px;
+        /* Luxray Container - Anchored Bottom Right of Column */
+        .luxray-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: auto; /* Pushes it to the bottom of flex container */
+            padding-bottom: 10px;
+        }
+        
+        .luxray-img {
+            width: 180px; /* Adjusted size */
+            filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));
+            transform: rotate(-5deg);
         }
 
         /* Lore Box */
@@ -183,9 +176,7 @@
             50% { transform: translateY(-10px) rotate(calc(var(--rot) + 2deg)); }
         }
 
-        .cursor-blink {
-            animation: blink 1s step-end infinite;
-        }
+        .cursor-blink { animation: blink 1s step-end infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     </style>
@@ -212,19 +203,20 @@
             </div>
         </header>
 
-        <!-- STICKERS (Scattered with new sizes) -->
-        <!-- Croatia (Large) -->
-        <div class="sticker sticker-lg flex items-center justify-center" style="--rot: 15deg;">
+        <!-- STICKERS (Specific Sizes Applied) -->
+        
+        <!-- Croatia: Bigger -->
+        <div class="sticker w-40 h-40 md:w-52 md:h-52 flex items-center justify-center" style="--rot: 12deg;">
             <img src="croatia.png" alt="Croatia" draggable="false">
         </div>
 
-        <!-- Gcat (Medium) -->
-        <div class="sticker sticker-md flex items-center justify-center" style="--rot: -12deg;">
+        <!-- Gcat: Standard -->
+        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: -15deg;">
             <img src="gcat.png" alt="Gcat" draggable="false">
         </div>
 
-        <!-- Pythowo (Small) -->
-        <div class="sticker sticker-sm flex items-center justify-center" style="--rot: 8deg;">
+        <!-- Pythowo: Smaller -->
+        <div class="sticker w-24 h-24 md:w-28 md:h-28 flex items-center justify-center" style="--rot: 5deg;">
             <img src="pythowo.png" alt="Pythowo" draggable="false">
         </div>
 
@@ -265,15 +257,11 @@
         </section>
 
         <!-- RIGHT COLUMN: CONTROLS -->
-        <section class="col-span-1 md:col-span-4 relative flex flex-col items-center justify-center min-h-[250px] border border-dashed border-pink-500/20 rounded-2xl bg-black/20 overflow-hidden">
+        <section class="col-span-1 md:col-span-4 relative flex flex-col items-center min-h-[300px] border border-dashed border-pink-500/20 rounded-2xl bg-black/20 p-4">
             
-            <!-- Luxray (Next to button, bottom right) -->
-            <div class="luxray-container">
-                <img src="luxray.png" alt="Luxray" style="width: 100%; filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));">
-            </div>
-
-            <!-- CTA Content (Centered) -->
-            <div class="z-30 relative flex flex-col items-center justify-center gap-3 mt-4">
+            <!-- Top: Text + Arrow + Button -->
+            <div class="z-30 flex flex-col items-center gap-3 mb-auto"> <!-- mb-auto pushes content down slightly but keeps spacing -->
+                
                 <div class="flex flex-col items-center animate-bounce">
                     <span class="text-pink-300 font-bold tracking-widest text-xs bg-black/50 px-3 py-1 rounded-full border border-pink-500/30 mb-2">
                         Wanna join? :P
@@ -288,9 +276,17 @@
                 </a>
             </div>
 
+            <!-- Bottom: Luxray (Static) -->
+            <div class="luxray-wrapper">
+                <img src="luxray.png" alt="Luxray" class="luxray-img">
+            </div>
+
         </section>
 
     </main>
+
+    <!-- Placeholder for content below -->
+    <div class="text-pink-900 text-xs mt-8 font-mono">:: SCROLL DOWN FOR MORE DATA ::</div>
 
     <script>
         /**
@@ -304,7 +300,7 @@
             const BOUNCE = 0.7;
             
             stickers.forEach(sticker => {
-                // Initial Scattered Positioning
+                // Scattered Positioning
                 const randX = Math.random() * 70 + 5; 
                 const randY = Math.random() * 50 + 10;
                 
