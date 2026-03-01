@@ -7,335 +7,324 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --glass-bg: rgba(20, 10, 15, 0.6);
             --glass-border: rgba(255, 105, 180, 0.3);
             --neon-pink: #ff69b4;
-            --neon-glow: rgba(255, 105, 180, 0.6);
-            --terminal-font: 'JetBrains Mono', 'Courier New', monospace;
+            --neon-blue: #00f3ff;
+            --terminal-font: 'Fira Code', monospace;
             --whimsy-font: 'Comic Neue', cursive;
         }
 
         body {
-            background-color: #050507;
-            /* Improved radial gradient for depth */
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(255, 77, 106, 0.08) 0%, transparent 50%),
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 100%, 100% 2px, 3px 100%;
-            font-family: var(--terminal-font);
+            background-color: #050505;
             color: #fce7f3;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
-            padding: 1rem;
-            perspective: 1000px; /* Enables 3D space */
+            font-family: var(--terminal-font);
+            /* Advanced Background Grid */
+            background-image: 
+                linear-gradient(rgba(255, 77, 106, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 77, 106, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 50% 50%, rgba(255, 20, 60, 0.1) 0%, transparent 70%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            perspective: 1000px; /* For 3D Tilt */
         }
 
-        /* CRT Scanline Effect */
+        /* Scanline Overlay */
         body::after {
             content: " ";
             display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 2;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 50;
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
         }
 
-        /* Glassmorphism Architecture */
-        .terminal-box {
+        /* --- Terminal Architecture --- */
+        .terminal-window {
             background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             box-shadow: 
                 0 0 0 1px rgba(255, 105, 180, 0.1),
-                0 20px 50px rgba(0, 0, 0, 0.8), 
-                inset 0 0 40px rgba(255, 105, 180, 0.05);
-            position: relative;
+                0 20px 50px rgba(0, 0, 0, 0.8),
+                0 0 80px rgba(255, 0, 80, 0.15);
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
+            position: relative;
+            overflow: hidden; /* Clips Luxray bottom */
         }
 
-        /* Typography Highlights */
-        .glow-title { 
-            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink); 
-            letter-spacing: 0.1em;
+        /* --- Header & Typography --- */
+        .window-controls span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
         }
         
-        .glow-border { 
-            box-shadow: 0 0 15px var(--neon-glow); 
+        .glitch-text {
+            position: relative;
+            color: #fff;
+            text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-blue);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
         }
 
-        /* Sticker Physics with Parallax */
+        @keyframes glitch-anim {
+            0% { text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-blue); }
+            25% { text-shadow: -2px 2px var(--neon-pink), 2px -2px var(--neon-blue); }
+            50% { text-shadow: 2px -2px var(--neon-pink), -2px 2px var(--neon-blue); transform: skew(0.5deg); }
+            75% { text-shadow: -2px -2px var(--neon-pink), 2px 2px var(--neon-blue); }
+            100% { text-shadow: 1px 1px var(--neon-pink), -1px -1px var(--neon-blue); }
+        }
+
+        /* --- Sticker Physics --- */
         .sticker {
             position: absolute;
-            z-index: 0;
+            z-index: 10;
             pointer-events: none;
             user-select: none;
             filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6));
-            transition: transform 0.1s linear; /* Smooth follow */
-            will-change: transform;
-        }
-
-        /* Floating Animation Keyframes */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(var(--rot)); }
-            50% { transform: translateY(-10px) rotate(calc(var(--rot) + 2deg)); }
-        }
-
-        .sticker-float {
+            /* Creative Floating Animation */
             animation: float 6s ease-in-out infinite;
         }
 
-        /* Text Containment (Matrix) */
+        /* Specific Sticker Positions & Delays */
+        .sticker-pos-1 { top: -5%; right: -5%; transform: rotate(15deg); animation-delay: 0s; } /* Croatia */
+        .sticker-pos-2 { top: 10%; left: -8%; transform: rotate(-10deg); animation-delay: 1.5s; } /* Gcat */
+        .sticker-pos-3 { bottom: 20%; right: -10%; transform: rotate(-5deg); animation-delay: 3s; } /* Hisui Zorua */
+        .sticker-pos-4 { bottom: 30%; left: -5%; transform: rotate(12deg); animation-delay: 0.5s; } /* Pythowo */
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(var(--rot)); }
+            50% { transform: translateY(-20px) rotate(var(--rot)); }
+            100% { transform: translateY(0px) rotate(var(--rot)); }
+        }
+
+        /* Luxray Static Position */
+        .luxray-static {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(45%); /* Pushes bottom half out of view */
+            z-index: 20;
+            width: 220px;
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.4));
+        }
+
+        /* --- Lore Matrix (Glass Content) --- */
         .lore-matrix {
-            position: relative;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px dashed rgba(255, 105, 180, 0.3);
-            backdrop-filter: blur(4px);
-            min-height: 200px; /* Prevent layout shift during typing */
+            position: relative;
+            z-index: 30; /* Above stickers */
+            backdrop-filter: blur(5px);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Terminal List Styles */
-        .terminal-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        /* Typewriter Entry Animation */
+        .lore-item {
+            opacity: 0;
+            transform: translateX(-10px);
+            animation: slideIn 0.5s forwards;
         }
-        .terminal-line {
-            display: flex;
-            gap: 0.75rem;
-            opacity: 0; /* Hidden initially for JS effect */
-            animation: fadeIn 0.5s forwards;
-        }
-        .prompt { color: var(--neon-pink); font-weight: bold; min-width: 20px;}
-        
-        /* Blinking Cursor */
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 1.2em;
-            background-color: var(--neon-pink);
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 4px;
+        /* Delays handled in inline styles */
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        @keyframes blink { 50% { opacity: 0; } }
-        @keyframes fadeIn { to { opacity: 1; } }
-
-        /* Button Dynamics */
+        /* --- Button Dynamics --- */
         .btn-whimsy {
-            font-family: var(--whimsy-font);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
+            font-family: var(--whimsy-font);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        
         .btn-whimsy::before {
             content: '';
             position: absolute;
             top: 0; left: -100%;
             width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: 0.5s;
+            transition: left 0.5s;
         }
-        
         .btn-whimsy:hover::before {
             left: 100%;
         }
-
         .btn-whimsy:hover {
             transform: scale(1.1) rotate(-2deg);
-            box-shadow: 0 0 30px rgba(255, 77, 77, 0.8), inset 0 0 20px rgba(255,255,255,0.5);
-            letter-spacing: 2px;
+            box-shadow: 0 0 30px rgba(255, 20, 60, 0.8);
+            border-color: #fff;
         }
 
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .sticker { opacity: 0.6; transform: scale(0.7) !important; }
-            /* Hide overlapping stickers on mobile to save space */
-            .sticker.mobile-hide { display: none; }
-        }
     </style>
 </head>
 <body class="selection:bg-pink-500/30">
 
-    <main class="terminal-box w-full max-w-4xl p-6 md:p-10 rounded-3xl flex flex-col gap-8" id="mainCard">
+    <!-- Main 3D Container -->
+    <main id="tilt-card" class="terminal-window w-[90%] max-w-5xl rounded-3xl p-1 md:p-2 flex flex-col gap-0 ring-1 ring-white/10">
         
-        <!-- Sticker Layer: Organized absolutely over the card -->
-        <div id="sticker-layer" class="absolute inset-0 overflow-hidden pointer-events-none rounded-3xl">
-            
-            <!-- Croatia -->
-            <img src="croatia.png" alt="Croatiaball" 
-                 class="sticker sticker-float w-24 md:w-32" 
-                 style="--rot: 18deg; top: 10%; right: -5%;"
-                 data-speed="2">
-            
-            <!-- Germany Cat -->
-            <img src="gcat.png" alt="Germany Cat" 
-                 class="sticker sticker-float w-32 md:w-48" 
-                 style="--rot: -12deg; top: 30%; left: -10%; animation-delay: 1s;"
-                 data-speed="3">
-            
-            <!-- Hisuian Zorua -->
-            <img src="zorua-hisui.png" alt="Hisuian Zorua" 
-                 class="sticker sticker-float w-36 md:w-56" 
-                 style="--rot: -8deg; top: 40%; right: -5%; animation-delay: 2s;"
-                 data-speed="2.5">
-            
-            <!-- Pythowo -->
-            <img src="pythowo.png" alt="Pythowo" 
-                 class="sticker sticker-float w-20 md:w-28" 
-                 style="--rot: 22deg; bottom: 20%; left: 0%; animation-delay: 0.5s;"
-                 data-speed="4">
-            
-            <!-- Luxray (Clipped at bottom) -->
-            <!-- Using translate-y to push it down, and translate-y-[45%] as requested to clip -->
-            <img src="luxray.png" alt="Luxray" 
-                 class="sticker sticker-float w-48 md:w-64 absolute bottom-0 right-[25%] translate-y-[45%]" 
-                 style="--rot: 5deg; z-index: 5; animation-delay: 1.5s;"
-                 data-speed="1.5">
+        <!-- Window Header -->
+        <div class="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-black/20 rounded-t-2xl">
+            <div class="flex items-center gap-2">
+                <div class="window-controls"><span class="bg-red-500"></span></div>
+                <div class="window-controls"><span class="bg-yellow-500"></span></div>
+                <div class="window-controls"><span class="bg-green-500"></span></div>
+            </div>
+            <div class="text-xs text-pink-300/50 font-mono tracking-widest">root@shinx-nexus:~</div>
         </div>
 
-        <header class="relative z-10 flex flex-col md:flex-row items-center gap-6 border-b border-pink-500/30 pb-6">
-            <figure class="relative group">
-                <div class="absolute -inset-1 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-                <img src="zoruapfp.jpg" alt="Profile Avatar" class="relative w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover rotate-[6deg] border-2 border-pink-400 shadow-lg transition-transform duration-300 group-hover:rotate-0 group-hover:scale-105">
-            </figure>
+        <!-- Inner Content Area -->
+        <div class="relative flex flex-col p-6 md:p-10 min-h-[600px]">
             
-            <div class="text-center md:text-left">
-                <h2 class="text-pink-400 text-xs tracking-[0.3em] font-bold mb-1">USER.AUTHENTICATED</h2>
-                <h1 class="text-3xl md:text-5xl font-extrabold text-pink-100 glow-title">
-                    ZORUA // SHINX
-                </h1>
-            </div>
-        </header>
-
-        <section class="lore-matrix rounded-xl p-6 text-pink-100/90 text-sm md:text-base leading-relaxed shadow-inner flex flex-col">
-            <ul class="terminal-list" id="terminal-text">
-                <!-- Content injected via JS for typing effect -->
-            </ul>
-            <span class="cursor ml-7"></span>
-        </section>
-
-        <section class="relative z-10 flex flex-col items-center justify-center gap-4 mt-2">
+            <!-- SCATTERED STICKERS (Creative, Floating, Visible) -->
+            <!-- Note: Setting --rot via inline style to keep the rotation consistent during float animation -->
             
-            <div class="flex flex-col items-center opacity-0 animate-fade-in-up" style="animation: fadeIn 1s ease-out 3s forwards;">
-                <span class="text-pink-300 font-bold tracking-widest text-xs mb-2 uppercase">Initialize Protocol?</span>
+            <!-- 1. Croatia (Nationality, Prominent Top Right) -->
+            <img src="croatia.png" alt="Croatia" 
+                 class="sticker sticker-pos-1 w-32 md:w-48" 
+                 style="--rot: 15deg; animation-delay: 0s;">
+            
+            <!-- 2. Gcat (Top Left) -->
+            <img src="gcat.png" alt="Germany Cat" 
+                 class="sticker sticker-pos-2 w-32 md:w-48" 
+                 style="--rot: -12deg; animation-delay: 1.5s;">
+
+            <!-- 3. Hisui Zorua (Mid Right, Visible) -->
+            <img src="hisui-zorua.png" alt="Hisuian Zorua" 
+                 class="sticker sticker-pos-3 w-36 md:w-52" 
+                 style="--rot: -8deg; animation-delay: 3s;">
+
+            <!-- 4. Pythowo (Bottom Left) -->
+            <img src="pythowo.png" alt="Pythowo" 
+                 class="sticker sticker-pos-4 w-32 md:w-48" 
+                 style="--rot: 12deg; animation-delay: 0.5s;">
+
+            <!-- STATIC LUXRAY (Bottom Center, Cut off) -->
+            <img src="luxray.png" alt="Luxray" class="luxray-static static-img">
+
+            <!-- Content Layer (Relative) -->
+            <div class="relative z-30 flex flex-col gap-8 items-center w-full">
                 
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#ffb6c1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce mb-2" style="filter: drop-shadow(0 0 8px rgba(255, 182, 193, 0.8));">
-                    <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
-                </svg>
+                <!-- Header -->
+                <header class="flex flex-col md:flex-row items-center gap-6 w-full justify-center md:justify-start border-b border-pink-500/20 pb-6">
+                    <div class="relative group">
+                        <!-- Glowing Ring -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-pink-500 to-blue-500 rounded-xl blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
+                        <img src="zoruapfp.jpg" alt="Profile" 
+                             class="relative w-24 h-24 md:w-32 md:h-32 rounded-xl object-cover border-2 border-white/50 shadow-2xl rotate-3 hover:rotate-0 transition duration-300">
+                    </div>
+                    
+                    <div class="flex flex-col text-center md:text-left">
+                        <h1 class="text-4xl md:text-6xl font-black text-white glitch-title tracking-tighter">
+                            <span class="glitch-text">ZORUA</span> <span class="text-pink-500">/</span> <span style="color: #00f3ff;">SHINX</span>
+                        </h1>
+                        <p class="text-pink-200/60 font-mono text-sm mt-2 tracking-[0.3em] uppercase">System Status: Online</p>
+                    </div>
+                </header>
+
+                <!-- Lore Matrix -->
+                <section class="lore-matrix w-full max-w-2xl rounded-2xl p-6 text-pink-100 text-sm md:text-base leading-relaxed flex flex-col gap-4">
+                    
+                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 0.2s;">
+                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
+                        <p>balkanese tomboy :P</p>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 0.4s;">
+                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
+                        <p>good at rimac simping and still lazy writing codes in snek c:</p>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 0.6s;">
+                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
+                        <p>aspiring pentester and malware analyst</p>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 0.8s;">
+                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
+                        <p>lover of chocolate</p>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 1.0s;">
+                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
+                        <p>cats are great meow</p>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 1.2s;">
+                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
+                        <p>founder of shinxism cult - do study or procastrinate, thats da question</p>
+                    </div>
+                </section>
+
+                <!-- Call to Action -->
+                <section class="relative z-40 flex flex-col items-center justify-center mt-4 gap-4">
+                    
+                    <div class="flex flex-col items-center opacity-80">
+                        <span class="text-pink-300 font-bold tracking-[0.2em] text-xs md:text-sm mb-2">INITIALIZE SEQUENCE?</span>
+                        <!-- Animated Arrow -->
+                        <svg width="30" height="30" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-400 animate-bounce">
+                            <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
+                        </svg>
+                    </div>
+
+                    <a href="shinxism.html" class="btn-whimsy bg-gradient-to-r from-pink-600 via-red-500 to-pink-600 text-white text-xl md:text-2xl px-12 py-4 rounded-full border-2 border-white/40 shadow-[0_0_30px_rgba(236,72,153,0.5)] tracking-widest font-bold outline-none cursor-pointer">
+                        ENTER
+                    </a>
+                    
+                </section>
+
             </div>
-
-            <a href="shinxism.html" class="btn-whimsy opacity-0 bg-gradient-to-r from-pink-500 to-red-500 text-white text-xl md:text-2xl px-12 py-4 rounded-full border-2 border-white/50 shadow-[0_0_20px_rgba(255,105,180,0.5)] tracking-wider outline-none cursor-pointer font-bold" style="animation: fadeIn 1s ease-out 3.5s forwards;">
-                ENTER_SYSTEM
-            </a>
-            
-        </section>
-
+        </div>
+        
+        <!-- Footer Status -->
+        <div class="bg-black/40 px-4 py-2 text-[10px] text-pink-500/50 font-mono flex justify-between border-t border-white/5">
+            <span id="time-display">00:00:00</span>
+            <span>MEM: 64TB OK</span>
+        </div>
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // 1. Live Clock
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time-display').innerText = now.toLocaleTimeString('en-US', { hour12: false });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 2. 3D Tilt Effect (Mouse movement)
+        const card = document.getElementById('tilt-card');
+        const body = document.body;
+
+        body.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 768) return; // Disable on mobile
+
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
             
-            // --- 1. Terminal Typing Effect ---
-            const lines = [
-                "balkanese tomboy :P",
-                "good at rimac simping and still lazy writing codes in snek c:",
-                "aspiring pentester and malware analyst",
-                "lover of chocolate",
-                "cats are great meow",
-                "founder of shinxism cult - do study or procastrinate, thats da question"
-            ];
-            
-            const listContainer = document.getElementById('terminal-text');
-            let lineIndex = 0;
-            let charIndex = 0;
-            let currentLineElement = null;
-
-            function typeWriter() {
-                if (lineIndex < lines.length) {
-                    if (!currentLineElement) {
-                        // Create new line
-                        currentLineElement = document.createElement('li');
-                        currentLineElement.className = 'terminal-line mb-3';
-                        currentLineElement.innerHTML = `<span class="prompt">></span><span class="text-content"></span>`;
-                        listContainer.appendChild(currentLineElement);
-                    }
-
-                    const textSpan = currentLineElement.querySelector('.text-content');
-                    const currentText = lines[lineIndex];
-
-                    if (charIndex < currentText.length) {
-                        textSpan.textContent += currentText.charAt(charIndex);
-                        charIndex++;
-                        setTimeout(typeWriter, 30 + Math.random() * 50); // Random typing speed for realism
-                    } else {
-                        // Line finished
-                        currentLineElement = null;
-                        charIndex = 0;
-                        lineIndex++;
-                        setTimeout(typeWriter, 400); // Pause between lines
-                    }
-                }
-            }
-            
-            // Start typing after a short delay
-            setTimeout(typeWriter, 800);
-
-
-            // --- 2. Parallax & 3D Tilt Engine ---
-            const card = document.getElementById('mainCard');
-            const stickers = document.querySelectorAll('.sticker');
-
-            document.addEventListener('mousemove', (e) => {
-                const x = (window.innerWidth - e.pageX * 2) / 100;
-                const y = (window.innerHeight - e.pageY * 2) / 100;
-
-                // Subtle tilt of the main card
-                card.style.transform = `rotateY(${x * 0.5}deg) rotateX(${y * 0.5}deg)`;
-
-                // Parallax movement for stickers
-                stickers.forEach(sticker => {
-                    const speed = sticker.getAttribute('data-speed');
-                    const moveX = (window.innerWidth / 2 - e.pageX) * speed / 100;
-                    const moveY = (window.innerHeight / 2 - e.pageY) * speed / 100;
-                    
-                    // We use translate3d to combine the parallax with the existing CSS animation/rotation
-                    // Note: This overrides the 'transform' in CSS, so we must preserve the rotation logic or use margins
-                    // To keep it simple and compatible with the float animation, we adjust margins instead or wrap them.
-                    // For a cleaner implementation with existing animations, we will apply the parallax to the *parent* concept or use margins.
-                    // However, a simpler "JS Parallax" that works with CSS animations is usually setting style variables or top/left.
-                    
-                    // Let's stick to modifying top/left slightly for parallax to avoid breaking the CSS keyframes rotation
-                    sticker.style.marginLeft = `${moveX}px`;
-                    sticker.style.marginTop = `${moveY}px`;
-                });
-            });
-            
-            // Reset on mouse leave
-            document.addEventListener('mouseleave', () => {
-                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-                stickers.forEach(sticker => {
-                    sticker.style.marginLeft = `0px`;
-                    sticker.style.marginTop = `0px`;
-                });
-            });
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
         });
+
+        // Reset on mouse leave
+        body.addEventListener('mouseleave', () => {
+            card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
+
+        // 3. Console Easter Egg
+        console.log("%c SHINX_NEXUS LOADED ", "background: #ff69b4; color: #fff; padding: 5px; font-weight: bold;");
+        console.log("Welcome to the cult. :P");
     </script>
 </body>
 </html>
