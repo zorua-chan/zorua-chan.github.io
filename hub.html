@@ -83,7 +83,7 @@
             box-shadow: 0 0 50px rgba(255, 20, 147, 0.2), inset 0 0 20px rgba(0,0,0,0.8);
             position: relative;
             z-index: 10;
-            overflow: visible;
+            overflow: visible; /* Required to let stickers hang off the edge */
         }
 
         /* Profile Glitch Ring */
@@ -145,36 +145,20 @@
             100% { transform: skew(0deg); }
         }
 
-        /* Stickers */
-        .sticker {
+        /* Pure CSS Sticker Hover (No Dragging) */
+        .float-sticker {
             position: absolute;
-            cursor: grab;
             z-index: 50;
+            pointer-events: none; /* Passes clicks through so you don't accidentally highlight them */
             filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8));
-            transition: transform 0.1s;
-            user-select: none;
-            touch-action: none;
             animation: float 6s ease-in-out infinite;
         }
-        .sticker:active {
-            cursor: grabbing;
-            transform: scale(1.1) rotate(calc(var(--rot) * -0.5));
-            filter: drop-shadow(0 20px 25px rgba(255,20,147,0.4));
-            z-index: 100 !important;
-        }
-        .sticker img {
-            width: 100%; height: auto; display: block;
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(var(--rot)); }
+            50% { transform: translateY(-10px) rotate(calc(var(--rot) + 2deg)); }
         }
 
         /* Luxray - Electric Aura */
-        .luxray-container {
-            position: absolute; 
-            bottom: 25px; 
-            right: 0px;
-            z-index: 20; 
-            pointer-events: none; 
-            width: 200px;
-        }
         .luxray-aura {
             width: 100%;
             animation: electric-pulse 3s ease-in-out infinite;
@@ -186,7 +170,8 @@
 
         /* Lore Matrix & Cyber Hover */
         .lore-matrix {
-            position: relative; z-index: 10;
+            position: relative; 
+            z-index: 10;
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 105, 180, 0.2);
             backdrop-filter: blur(10px);
@@ -267,11 +252,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Misc */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(var(--rot)); }
-            50% { transform: translateY(-12px) rotate(calc(var(--rot) + 3deg)); }
-        }
         .cursor-blink {
             animation: blink 1s step-end infinite;
             color: var(--neon-pink);
@@ -287,6 +267,8 @@
 
     <main class="terminal-box w-[95%] max-w-6xl p-6 md:p-8 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8" id="main-terminal">
         
+        <img src="croatia.png" alt="Croatia" class="float-sticker w-40 md:w-56" style="top: -10%; right: -2%; --rot: 8deg;">
+
         <header class="col-span-1 md:col-span-12 flex flex-col md:flex-row items-center gap-6 border-b border-pink-500/30 pb-4 mb-2">
             <div class="relative group flex-shrink-0">
                 <div class="profile-ring"></div>
@@ -305,69 +287,62 @@
             </div>
         </header>
 
-        <div class="sticker w-36 h-36 md:w-48 md:h-48 flex items-center justify-center" style="--rot: 15deg;">
-            <img src="croatia.png" alt="Croatia" draggable="false">
-        </div>
-        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: -12deg;">
-            <img src="gcat.png" alt="Gcat" draggable="false">
-        </div>
-        <div class="sticker w-24 h-24 md:w-32 md:h-32 flex items-center justify-center" style="--rot: 8deg;">
-            <img src="pythowo.png" alt="Pythowo" draggable="false">
-        </div>
+        <section class="col-span-1 md:col-span-8 relative">
+            
+            <div class="lore-matrix rounded-2xl p-6 md:p-8 text-pink-100/80 text-sm md:text-base leading-relaxed flex flex-col gap-4 min-h-[300px]">
+                
+                <img src="gcat.png" alt="Gcat" class="float-sticker w-16 md:w-24" style="top: -20px; right: -20px; --rot: -12deg;">
 
-        <section class="col-span-1 md:col-span-8">
-            <div class="lore-matrix rounded-2xl p-5 md:p-6 text-pink-100/80 text-sm md:text-base leading-relaxed flex flex-col gap-4">
+                <img src="pythowo.png" alt="Pythowo" class="float-sticker w-24 md:w-32" style="bottom: 10px; right: 10px; --rot: 0deg;">
+
                 <div class="flex items-start gap-3 cyber-hover w-fit cursor-default">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>balkanese tomboy :P</p>
                 </div>
-                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default">
-                    <span class="text-pink-500 font-bold mt-1">></span>
+                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default pr-24"> <span class="text-pink-500 font-bold mt-1">></span>
                     <p>good at rimac simping and still lazy writing codes in snek c:</p>
                 </div>
-                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default">
+                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default pr-24">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>aspiring pentester and malware analyst</p>
                 </div>
-                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default">
+                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default pr-24">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>lover of chocolate</p>
                 </div>
-                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default">
+                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default pr-24">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>cats are great meow</p>
                 </div>
-                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default">
+                <div class="flex items-start gap-3 cyber-hover w-fit cursor-default pr-32">
                     <span class="text-pink-500 font-bold mt-1">></span>
                     <p>founder of shinxism cult - do study or procastrinate, thats da question<span class="cursor-blink">_</span></p>
                 </div>
             </div>
         </section>
 
-        <section class="col-span-1 md:col-span-4 relative flex flex-col items-center justify-start min-h-[250px] border border-dashed border-pink-500/30 rounded-2xl bg-black/40 overflow-hidden py-6 shadow-inner">
+        <section class="col-span-1 md:col-span-4 relative flex flex-col items-center justify-start min-h-[300px] border border-dashed border-pink-500/30 rounded-2xl bg-black/40 overflow-hidden py-8 shadow-inner">
             
-            <div class="luxray-container">
-                <img src="luxray.png" alt="Luxray" class="luxray-aura">
-            </div>
-
-            <div class="z-30 relative flex flex-col items-center justify-center gap-2 mt-2 mb-2">
+            <div class="z-30 relative flex flex-col items-center justify-center gap-2 mt-4">
                 
-                <div class="flex flex-col items-center animate-bounce">
-                    <span class="text-blue-300 font-bold tracking-widest text-xs bg-black/70 px-4 py-1.5 rounded-full border border-blue-500/50 mb-2 shadow-[0_0_10px_rgba(59,130,246,0.2)] backdrop-blur-sm">
-                        Wanna join? :P
-                    </span>
-                    
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.8));">
-                        <path d="M 22 0 Q 18 6 23 12 Q 17 18 21 24" />
-                        <path d="M 10 16 L 22 28 L 34 14" />
-                    </svg>
-                </div>
+                <span class="text-blue-300 font-bold tracking-widest text-[10px] bg-black/70 px-4 py-1.5 rounded-full border border-blue-500/50 mb-1 shadow-[0_0_10px_rgba(59,130,246,0.2)] backdrop-blur-sm">
+                    Wanna join? :P
+                </span>
+                
+                <svg width="24" height="32" viewBox="0 0 24 32" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce" style="filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.8));">
+                    <path d="M 12 2 Q 18 10 12 16 Q 6 22 12 28" />
+                    <path d="M 6 22 L 12 28 L 18 22" />
+                </svg>
 
-                <a href="shinxism.html" class="btn-shinx px-10 py-3 mt-2">
-                    <span class="text-xl">
-                        Enter <span style="margin-left:5px; font-family: monospace;">-></span>
+                <a href="shinxism.html" class="btn-shinx px-8 py-2 mt-1">
+                    <span class="text-lg">
+                        ENTER <span style="margin-left:5px; font-family: monospace;">-></span>
                     </span>
                 </a>
+            </div>
+
+            <div class="absolute bottom-[-15px] right-[-10px] w-40 md:w-48 z-20 pointer-events-none">
+                <img src="luxray.png" alt="Luxray" class="luxray-aura">
             </div>
 
         </section>
@@ -376,140 +351,5 @@
 
     <div class="text-pink-900 text-xs mt-10 font-mono tracking-widest opacity-60 hover:opacity-100 transition-opacity cursor-default">:: SCROLL DOWN FOR MORE DATA ::</div>
 
-    <script>
-        /**
-         * Physics Engine - Unaltered. The math holds.
-         */
-        document.addEventListener('DOMContentLoaded', () => {
-            const stickers = document.querySelectorAll('.sticker');
-            const terminal = document.getElementById('main-terminal');
-            
-            const FRICTION = 0.94;
-            const BOUNCE = 0.7;
-            
-            stickers.forEach(sticker => {
-                const randX = Math.random() * 70 + 5; 
-                const randY = Math.random() * 50 + 10;
-                
-                sticker.style.left = `${randX}%`;
-                sticker.style.top = `${randY}%`;
-                
-                const state = {
-                    isDragging: false,
-                    startX: 0, startY: 0,
-                    initialLeft: 0, initialTop: 0,
-                    vx: 0, vy: 0,
-                    lastX: 0, lastY: 0,
-                    lastTime: 0
-                };
-
-                const startDrag = (e) => {
-                    e.preventDefault();
-                    state.isDragging = true;
-                    
-                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-                    state.startX = clientX;
-                    state.startY = clientY;
-                    
-                    const rect = sticker.getBoundingClientRect();
-                    const parentRect = terminal.getBoundingClientRect();
-                    
-                    state.initialLeft = rect.left - parentRect.left;
-                    state.initialTop = rect.top - parentRect.top;
-                    
-                    state.vx = 0; state.vy = 0;
-                    state.lastX = clientX; state.lastY = clientY;
-                    state.lastTime = performance.now();
-
-                    sticker.style.animation = 'none';
-                    sticker.style.transition = 'none';
-                };
-
-                const moveDrag = (e) => {
-                    if (!state.isDragging) return;
-                    e.preventDefault();
-
-                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-                    const deltaX = clientX - state.startX;
-                    const deltaY = clientY - state.startY;
-
-                    let newLeft = state.initialLeft + deltaX;
-                    let newTop = state.initialTop + deltaY;
-
-                    const maxLeft = terminal.offsetWidth - sticker.offsetWidth;
-                    const maxTop = terminal.offsetHeight - sticker.offsetHeight;
-
-                    if (newLeft < 0) newLeft = 0;
-                    if (newLeft > maxLeft) newLeft = maxLeft;
-                    if (newTop < 0) newTop = 0;
-                    if (newTop > maxTop) newTop = maxTop;
-
-                    sticker.style.left = `${newLeft}px`;
-                    sticker.style.top = `${newTop}px`;
-
-                    const now = performance.now();
-                    const dt = now - state.lastTime;
-                    if (dt > 0) {
-                        state.vx = (clientX - state.lastX) / dt * 15;
-                        state.vy = (clientY - state.lastY) / dt * 15;
-                    }
-                    
-                    state.lastX = clientX; state.lastY = clientY;
-                    state.lastTime = now;
-                };
-
-                const endDrag = () => {
-                    if (!state.isDragging) return;
-                    state.isDragging = false;
-                    requestAnimationFrame(momentumLoop);
-                };
-
-                const momentumLoop = () => {
-                    if (state.isDragging) return;
-
-                    state.vx *= FRICTION;
-                    state.vy *= FRICTION;
-
-                    if (Math.abs(state.vx) < 0.1 && Math.abs(state.vy) < 0.1) {
-                        state.vx = 0; state.vy = 0;
-                        sticker.style.animation = 'float 6s ease-in-out infinite';
-                        return;
-                    }
-
-                    let currentLeft = parseFloat(sticker.style.left) || 0;
-                    let currentTop = parseFloat(sticker.style.top) || 0;
-
-                    let nextLeft = currentLeft + state.vx;
-                    let nextTop = currentTop + state.vy;
-
-                    const maxLeft = terminal.offsetWidth - sticker.offsetWidth;
-                    const maxTop = terminal.offsetHeight - sticker.offsetHeight;
-
-                    if (nextLeft <= 0) { nextLeft = 0; state.vx = -state.vx * BOUNCE; }
-                    else if (nextLeft >= maxLeft) { nextLeft = maxLeft; state.vx = -state.vx * BOUNCE; }
-
-                    if (nextTop <= 0) { nextTop = 0; state.vy = -state.vy * BOUNCE; }
-                    else if (nextTop >= maxTop) { nextTop = maxTop; state.vy = -state.vy * BOUNCE; }
-
-                    sticker.style.left = `${nextLeft}px`;
-                    sticker.style.top = `${nextTop}px`;
-
-                    requestAnimationFrame(momentumLoop);
-                };
-
-                sticker.addEventListener('mousedown', startDrag);
-                window.addEventListener('mousemove', moveDrag);
-                window.addEventListener('mouseup', endDrag);
-
-                sticker.addEventListener('touchstart', startDrag, { passive: false });
-                window.addEventListener('touchmove', moveDrag, { passive: false });
-                window.addEventListener('touchend', endDrag);
-            });
-        });
-    </script>
-</body>
+    </body>
 </html>
