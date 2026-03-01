@@ -147,7 +147,7 @@
             position: relative;
             z-index: 30;
             background: var(--shinx-black);
-            border-radius: 9999px; /* Pill shape */
+            border-radius: 9999px;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -156,12 +156,11 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Mask the rotating gradient */
+            overflow: hidden;
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
             transition: transform 0.3s ease;
         }
 
-        /* The rotating liquid gradient */
         .btn-shinx::before {
             content: '';
             position: absolute;
@@ -179,25 +178,23 @@
             animation: rotate-liquid 3s linear infinite;
         }
 
-        /* The inner glass layer */
         .btn-shinx::after {
             content: '';
             position: absolute;
-            inset: 3px; /* Thickness of the glass border */
-            background: rgba(15, 23, 42, 0.85); /* Dark inner core */
+            inset: 3px;
+            background: rgba(15, 23, 42, 0.85);
             border-radius: 9999px;
-            backdrop-filter: blur(4px); /* Glass effect */
+            backdrop-filter: blur(4px);
             z-index: 1;
         }
 
-        /* Button Text sits on top of ::after */
         .btn-shinx span {
             position: relative;
             z-index: 2;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            text-shadow: 0 0 10px rgba(250, 204, 21, 0.6); /* Yellow glow text */
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
         }
 
         .btn-shinx:hover {
@@ -206,7 +203,7 @@
         }
 
         .btn-shinx:hover::before {
-            animation-duration: 1.5s; /* Spin faster on hover */
+            animation-duration: 1.5s;
         }
 
         @keyframes rotate-liquid {
@@ -297,19 +294,18 @@
                 <img src="luxray.png" alt="Luxray" style="width: 100%; filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));">
             </div>
 
-            <!-- CTA Content -->
-            <div class="z-30 relative flex flex-col items-center justify-center gap-3 mb-16 mt-4">
+            <!-- CTA Content (Moved Higher via adjusted margins) -->
+            <div class="z-30 relative flex flex-col items-center justify-center gap-3 mb-4 mt-2">
                 <div class="flex flex-col items-center animate-bounce">
                     <span class="text-blue-300 font-bold tracking-widest text-xs bg-black/50 px-3 py-1 rounded-full border border-blue-500/30 mb-2">
                         Wanna join? :P
                     </span>
-                    <!-- Changed arrow color to blue/yellow theme -->
                     <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
                     </svg>
                 </div>
 
-                <!-- NEW LIQUID BUTTON -->
+                <!-- LIQUID BUTTON -->
                 <a href="shinxism.html" class="btn-shinx px-10 py-3">
                     <span class="text-xl">
                         Enter <span style="margin-left:5px;">-></span>
