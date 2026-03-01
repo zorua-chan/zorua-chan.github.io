@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass-bg: rgba(20, 10, 15, 0.6);
+            --glass-bg: rgba(20, 10, 15, 0.65);
             --glass-border: rgba(255, 105, 180, 0.3);
             --neon-pink: #ff69b4;
             --neon-accent: #ff1493;
@@ -20,50 +20,50 @@
 
         body {
             background-color: #050505;
-            /* Animated Grid Background */
             background-image: 
                 linear-gradient(rgba(255, 105, 180, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 105, 180, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
             font-family: var(--terminal-font);
             color: #fce7f3;
-            min-height: 100vh;
+            min-height: 100vh; /* Allows scrolling if content is added below */
+            padding-top: 4rem;
+            padding-bottom: 4rem;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Prevent scrollbars during dragging */
             position: relative;
+            overflow-x: hidden;
         }
 
-        /* CRT Scanline Effect Overlay */
+        /* CRT Effect */
         body::after {
             content: " ";
             display: block;
-            position: absolute;
+            position: fixed; /* Fixed overlay for effect */
             top: 0;
             left: 0;
             bottom: 0;
             right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 2;
+            z-index: 9999;
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
         }
 
-        /* Main Container */
         .terminal-box {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 0 40px rgba(255, 20, 147, 0.15), inset 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 50px rgba(255, 20, 147, 0.15), inset 0 0 20px rgba(0,0,0,0.5);
             position: relative;
             z-index: 10;
-            overflow: visible; /* Allow stickers to hang out slightly if needed */
-            transition: transform 0.1s;
+            overflow: visible; /* Allow stickers to overlap slightly */
+            /* Width set to max-w-6xl for Widescreen look */
         }
 
-        /* Title Glitch Animation */
+        /* Glitch Animation */
         .glitch-title {
             position: relative;
             animation: glitch-skew 3s infinite linear alternate-reverse;
@@ -110,25 +110,22 @@
             100% { transform: skew(0deg); }
         }
 
-        /* Interactive Stickers */
+        /* Stickers */
         .sticker {
             position: absolute;
             cursor: grab;
-            z-index: 50; /* Above text */
+            z-index: 50;
             filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
             transition: transform 0.1s;
             user-select: none;
-            touch-action: none; /* Important for drag physics */
-            /* Initial breath animation */
+            touch-action: none;
             animation: float 6s ease-in-out infinite;
         }
-        
         .sticker:active {
             cursor: grabbing;
             transform: scale(1.05);
             z-index: 100 !important;
         }
-
         .sticker img {
             width: 100%;
             height: auto;
@@ -137,33 +134,35 @@
             border: 2px solid rgba(255,255,255,0.1);
         }
 
-        /* Luxray Specifics */
+        /* Luxray Container - Bottom Right */
         .luxray-container {
             position: absolute;
-            bottom: -10px; /* Slightly overlapping bottom border */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20; /* Above background, below draggable stickers */
-            pointer-events: none; /* Static, non-interactive */
-            width: 220px;
+            bottom: -15px; /* Peeking out slightly */
+            right: -10px;  /* Moved to right */
+            z-index: 20;
+            pointer-events: none;
+            width: 200px; /* Slightly smaller to fit corner */
         }
 
-        /* Text Containment */
+        /* Lore Box */
         .lore-matrix {
             position: relative;
             z-index: 10;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 105, 180, 0.2);
             backdrop-filter: blur(8px);
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            /* Reduced padding to save height */
         }
 
-        /* Button Dynamics */
+        /* Button */
         .btn-enter {
             background: linear-gradient(45deg, #ff00cc, #333399);
             background-size: 200% 200%;
             animation: gradient-anim 3s ease infinite;
             transition: all 0.3s ease;
+            z-index: 30; /* Above Luxray */
+            position: relative;
         }
         .btn-enter:hover {
             transform: scale(1.05) rotate(-2deg);
@@ -181,7 +180,6 @@
             50% { transform: translateY(-10px) rotate(calc(var(--rot) + 2deg)); }
         }
 
-        /* Cursor Blink */
         .cursor-blink {
             animation: blink 1s step-end infinite;
         }
@@ -191,16 +189,24 @@
 </head>
 <body class="selection:bg-pink-500/50 selection:text-white">
 
-    <main class="terminal-box w-[95%] max-w-4xl min-h-[600px] p-6 md:p-10 rounded-3xl flex flex-col relative" id="main-terminal">
+    <!-- 
+       Layout: Grid 
+       Mobile: 1 Column
+       Desktop: 12 Columns
+       Header: Spans all 12
+       Lore: Spans 8 (Left)
+       Controls/Luxray: Spans 4 (Right) 
+    -->
+    <main class="terminal-box w-[95%] max-w-6xl p-6 md:p-8 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8" id="main-terminal">
         
-        <!-- Header -->
-        <header class="relative z-10 flex flex-col md:flex-row items-center gap-6 border-b border-pink-500/30 pb-6 mb-4">
-            <div class="relative group">
+        <!-- HEADER (Spans Full Width) -->
+        <header class="col-span-1 md:col-span-12 flex flex-col md:flex-row items-center gap-6 border-b border-pink-500/30 pb-4 mb-2">
+            <div class="relative group flex-shrink-0">
                 <div class="absolute inset-0 bg-pink-500 blur-lg opacity-40 group-hover:opacity-60 transition duration-500 rounded-lg"></div>
-                <img src="zoruapfp.jpg" alt="Profile" class="relative w-24 h-24 md:w-28 md:h-28 rounded-lg object-cover border-2 border-pink-400 rotate-3">
+                <img src="zoruapfp.jpg" alt="Profile" class="relative w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover border-2 border-pink-400 rotate-3">
             </div>
             
-            <div class="text-center md:text-left">
+            <div class="text-center md:text-left flex-1">
                 <div class="flex items-center justify-center md:justify-start gap-2 text-pink-400 text-xs tracking-[0.3em] mb-1 opacity-80">
                     <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                     SYSTEM ONLINE
@@ -211,149 +217,142 @@
             </div>
         </header>
 
-        <!-- Draggable Stickers (Will be initialized by JS) -->
-        <!-- Note: Images are sized via CSS (w-40) for consistency -->
-        
-        <!-- Croatia - High Visibility -->
-        <div class="sticker w-40 h-40 flex items-center justify-center" style="--rot: 15deg;">
+        <!-- STICKERS (Scattered) -->
+        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: 15deg;">
             <img src="croatia.png" alt="Croatia" draggable="false">
         </div>
 
-        <!-- Gcat - High Visibility -->
-        <div class="sticker w-40 h-40 flex items-center justify-center" style="--rot: -12deg;">
+        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: -12deg;">
             <img src="gcat.png" alt="Gcat" draggable="false">
         </div>
 
-        <!-- Pythowo - High Visibility -->
-        <div class="sticker w-40 h-40 flex items-center justify-center" style="--rot: 8deg;">
+        <div class="sticker w-32 h-32 md:w-40 md:h-40 flex items-center justify-center" style="--rot: 8deg;">
             <img src="pythowo.png" alt="Pythowo" draggable="false">
         </div>
 
-        <!-- Static Luxray (Bottom) -->
-        <div class="luxray-container">
-            <img src="luxray.png" alt="Luxray" style="width: 100%; filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));">
-        </div>
+        <!-- LEFT COLUMN: LORE (Spans 8 cols) -->
+        <section class="col-span-1 md:col-span-8">
+            <div class="lore-matrix rounded-2xl p-5 md:p-6 text-pink-100/90 text-sm md:text-base leading-relaxed flex flex-col gap-3">
+                
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p><span class="text-pink-400">identity:</span> balkanese tomboy :P</p>
+                </div>
+                
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p><span class="text-pink-400">skills:</span> good at rimac simping and lazy coding in snek c:</p>
+                </div>
+                
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p><span class="text-pink-400">career:</span> aspiring pentester and malware analyst</p>
+                </div>
+                
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p><span class="text-pink-400">fav:</span> lover of chocolate</p>
+                </div>
 
-        <!-- Lore / Content -->
-        <section class="lore-matrix rounded-2xl p-6 md:p-8 text-pink-100/90 text-sm md:text-base leading-relaxed flex flex-col gap-4 z-10 mt-2">
-            
-            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
-                <span class="text-pink-500 font-bold mt-1">></span>
-                <p><span class="text-pink-400">identity:</span> balkanese tomboy :P</p>
-            </div>
-            
-            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
-                <span class="text-pink-500 font-bold mt-1">></span>
-                <p><span class="text-pink-400">skills:</span> good at rimac simping and lazy coding in snek c:</p>
-            </div>
-            
-            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
-                <span class="text-pink-500 font-bold mt-1">></span>
-                <p><span class="text-pink-400">career:</span> aspiring pentester and malware analyst</p>
-            </div>
-            
-            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
-                <span class="text-pink-500 font-bold mt-1">></span>
-                <p><span class="text-pink-400">fav:</span> lover of chocolate</p>
-            </div>
-
-            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
-                <span class="text-pink-500 font-bold mt-1">></span>
-                <p><span class="text-pink-400">mood:</span> cats are great meow</p>
-            </div>
-            
-            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
-                <span class="text-pink-500 font-bold mt-1">></span>
-                <p><span class="text-pink-400">faction:</span> founder of shinxism cult - do study or procrastinate, that's da question<span class="cursor-blink">_</span></p>
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p><span class="text-pink-400">mood:</span> cats are great meow</p>
+                </div>
+                
+                <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                    <span class="text-pink-500 font-bold mt-1">></span>
+                    <p><span class="text-pink-400">faction:</span> founder of shinxism cult - do study or procrastinate, that's da question<span class="cursor-blink">_</span></p>
+                </div>
             </div>
         </section>
 
-        <!-- Footer / CTA -->
-        <section class="relative z-10 flex flex-col items-center justify-center mt-auto pt-8 gap-4">
-            <div class="flex flex-col items-center animate-bounce">
-                <span class="text-pink-300 font-bold tracking-widest text-xs md:text-sm mb-2 bg-black/30 px-3 py-1 rounded-full border border-pink-500/20">
-                    Wanna join? :P
-                </span>
-                
-                <svg width="32" height="32" viewBox="0 0 40 40" fill="none" stroke="#ffb6c1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
-                </svg>
+        <!-- RIGHT COLUMN: CONTROLS (Spans 4 cols) -->
+        <section class="col-span-1 md:col-span-4 relative flex flex-col items-center justify-center min-h-[250px] border border-dashed border-pink-500/20 rounded-2xl bg-black/20 overflow-hidden">
+            
+            <!-- Luxray (Static Bottom Right of this column) -->
+            <div class="luxray-container">
+                <img src="luxray.png" alt="Luxray" style="width: 100%; filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));">
             </div>
 
-            <a href="shinxism.html" class="btn-enter text-white text-xl md:text-2xl font-black px-12 py-4 rounded-full border-2 border-white/20 shadow-lg tracking-widest uppercase flex items-center gap-3 group">
-                Enter System
-                <span class="group-hover:translate-x-1 transition-transform">-></span>
-            </a>
+            <!-- CTA Content (Floating above Luxray) -->
+            <div class="z-30 relative flex flex-col items-center justify-center gap-3 mt-4">
+                <div class="flex flex-col items-center animate-bounce">
+                    <span class="text-pink-300 font-bold tracking-widest text-xs bg-black/50 px-3 py-1 rounded-full border border-pink-500/30 mb-2">
+                        Wanna join? :P
+                    </span>
+                    <svg width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="#ffb6c1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
+                    </svg>
+                </div>
+
+                <a href="shinxism.html" class="btn-enter text-white text-xl font-black px-8 py-3 rounded-full border-2 border-white/20 shadow-lg tracking-widest uppercase flex items-center gap-2 group">
+                    Enter <span class="group-hover:translate-x-1 transition-transform">-></span>
+                </a>
+            </div>
+
         </section>
 
     </main>
 
+    <!-- Placeholder for content below -->
+    <div class="text-pink-900 text-xs mt-8 font-mono">:: SCROLL DOWN FOR MORE DATA ::</div>
+
     <script>
         /**
-         * Advanced Physics & Interaction Script
-         * Handles: Dragging, Momentum, Boundary Collision, Floating Animation
+         * Physics Engine for Stickers
          */
         document.addEventListener('DOMContentLoaded', () => {
             const stickers = document.querySelectorAll('.sticker');
             const terminal = document.getElementById('main-terminal');
             
-            // Physics Configuration
-            const FRICTION = 0.94; // How quickly they stop (0 to 1)
-            const BOUNCE = 0.7;    // How bouncy the walls are
+            const FRICTION = 0.94;
+            const BOUNCE = 0.7;
             
             stickers.forEach(sticker => {
-                // Initial Random Positioning (Scattered)
-                // We use percentages to keep it responsive
-                const randX = Math.random() * 60 + 10; // 10% to 70% (avoid edges)
-                const randY = Math.random() * 60 + 10;
+                // Initial Scattered Positioning
+                // Since layout is wide, we spread them more horizontally
+                const randX = Math.random() * 70 + 5; 
+                const randY = Math.random() * 50 + 10;
                 
                 sticker.style.left = `${randX}%`;
                 sticker.style.top = `${randY}%`;
                 
-                // State object for physics
                 const state = {
                     isDragging: false,
                     startX: 0, startY: 0,
                     initialLeft: 0, initialTop: 0,
-                    vx: 0, vy: 0, // Velocity
+                    vx: 0, vy: 0,
                     lastX: 0, lastY: 0,
                     lastTime: 0
                 };
 
-                // Mouse Down / Touch Start
                 const startDrag = (e) => {
                     e.preventDefault();
                     state.isDragging = true;
                     
-                    // Get client coordinates
                     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
                     state.startX = clientX;
                     state.startY = clientY;
                     
-                    // Get current position (pixel values)
                     const rect = sticker.getBoundingClientRect();
                     const parentRect = terminal.getBoundingClientRect();
                     
-                    // Calculate relative position within terminal
                     state.initialLeft = rect.left - parentRect.left;
                     state.initialTop = rect.top - parentRect.top;
                     
-                    state.vx = 0;
-                    state.vy = 0;
-                    state.lastX = clientX;
-                    state.lastY = clientY;
+                    state.vx = 0; state.vy = 0;
+                    state.lastX = clientX; state.lastY = clientY;
                     state.lastTime = performance.now();
 
-                    sticker.style.animation = 'none'; // Stop floating while dragging
-                    sticker.style.transition = 'none'; // Remove transition for instant follow
+                    sticker.style.animation = 'none';
+                    sticker.style.transition = 'none';
                 };
 
-                // Mouse Move / Touch Move
                 const moveDrag = (e) => {
                     if (!state.isDragging) return;
-                    e.preventDefault(); // Prevent scrolling on mobile
+                    e.preventDefault();
 
                     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -364,7 +363,6 @@
                     let newLeft = state.initialLeft + deltaX;
                     let newTop = state.initialTop + deltaY;
 
-                    // Boundaries (Keep inside terminal)
                     const maxLeft = terminal.offsetWidth - sticker.offsetWidth;
                     const maxTop = terminal.offsetHeight - sticker.offsetHeight;
 
@@ -376,73 +374,49 @@
                     sticker.style.left = `${newLeft}px`;
                     sticker.style.top = `${newTop}px`;
 
-                    // Calculate velocity for "throw" effect
                     const now = performance.now();
                     const dt = now - state.lastTime;
                     if (dt > 0) {
-                        state.vx = (clientX - state.lastX) / dt * 15; // Multiplier adds weight
+                        state.vx = (clientX - state.lastX) / dt * 15;
                         state.vy = (clientY - state.lastY) / dt * 15;
                     }
                     
-                    state.lastX = clientX;
-                    state.lastY = clientY;
+                    state.lastX = clientX; state.lastY = clientY;
                     state.lastTime = now;
                 };
 
-                // Mouse Up / Touch End
                 const endDrag = () => {
                     if (!state.isDragging) return;
                     state.isDragging = false;
-                    
-                    // Apply momentum
                     requestAnimationFrame(momentumLoop);
                 };
 
-                // Momentum Loop (Physics after release)
                 const momentumLoop = () => {
                     if (state.isDragging) return;
 
-                    // Apply Friction
                     state.vx *= FRICTION;
                     state.vy *= FRICTION;
 
-                    // Stop if very slow
                     if (Math.abs(state.vx) < 0.1 && Math.abs(state.vy) < 0.1) {
-                        state.vx = 0;
-                        state.vy = 0;
-                        // Resume floating animation slightly modified
+                        state.vx = 0; state.vy = 0;
                         sticker.style.animation = 'float 6s ease-in-out infinite';
                         return;
                     }
 
-                    // Update Position
                     let currentLeft = parseFloat(sticker.style.left) || 0;
                     let currentTop = parseFloat(sticker.style.top) || 0;
 
                     let nextLeft = currentLeft + state.vx;
                     let nextTop = currentTop + state.vy;
 
-                    // Wall Collisions
                     const maxLeft = terminal.offsetWidth - sticker.offsetWidth;
                     const maxTop = terminal.offsetHeight - sticker.offsetHeight;
 
-                    // Bounce X
-                    if (nextLeft <= 0) {
-                        nextLeft = 0;
-                        state.vx = -state.vx * BOUNCE;
-                    } else if (nextLeft >= maxLeft) {
-                        nextLeft = maxLeft;
-                        state.vx = -state.vx * BOUNCE;
-                    }
+                    if (nextLeft <= 0) { nextLeft = 0; state.vx = -state.vx * BOUNCE; }
+                    else if (nextLeft >= maxLeft) { nextLeft = maxLeft; state.vx = -state.vx * BOUNCE; }
 
-                    // Bounce Y
-                    if (nextTop <= 0) {
-                        nextTop = 0;
-                        state.vy = -state.vy * BOUNCE;
-                    } else if (nextTop >= maxTop) {
-                        nextTop = maxTop;
-                        state.vy = -state.vy * BOUNCE;
-                    }
+                    if (nextTop <= 0) { nextTop = 0; state.vy = -state.vy * BOUNCE; }
+                    else if (nextTop >= maxTop) { nextTop = maxTop; state.vy = -state.vy * BOUNCE; }
 
                     sticker.style.left = `${nextLeft}px`;
                     sticker.style.top = `${nextTop}px`;
@@ -450,7 +424,6 @@
                     requestAnimationFrame(momentumLoop);
                 };
 
-                // Event Listeners
                 sticker.addEventListener('mousedown', startDrag);
                 window.addEventListener('mousemove', moveDrag);
                 window.addEventListener('mouseup', endDrag);
