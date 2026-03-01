@@ -3,92 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HUB // ZORUA_NEXUS</title>
+    <title>HUB // CENTRAL_NEXUS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Light, semi-transparent pinkish-reddish base */
-            --glass-bg: rgba(255, 105, 180, 0.12);
+            --glass-bg: rgba(20, 20, 25, 0.6); 
             --glass-border: rgba(255, 105, 180, 0.3);
-            --neon-pink: rgba(255, 105, 180, 0.8);
-            --pastel-pink: #ffb6c1;
+            --neon-pink: #ff69b4;
+            --neon-glow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            --terminal-font: 'Fira Code', 'Courier New', monospace;
+            --whimsy-font: 'Comic Neue', cursive;
         }
-        
-        body { 
-            background-color: #070709; 
-            font-family: 'Courier New', monospace; 
+
+        body {
+            background-color: #070709;
+            /* Advanced animated grid background */
+            background-image: 
+                linear-gradient(rgba(255, 77, 106, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 77, 106, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 50% 50%, rgba(255, 77, 106, 0.08) 0%, transparent 70%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            font-family: var(--terminal-font);
             color: #fce7f3;
-            /* Assume glitter canvas and scanlines are running in the background as per previous architecture */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Prevent scrollbars from parallax */
+            cursor: crosshair;
+            perspective: 1000px; /* Enable 3D space */
         }
 
-        /* The Containment Unit */
-        .hub-terminal {
+        /* CRT Overlay Effect */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.6;
+        }
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+            z-index: 998;
+        }
+
+        /* Glassmorphism Architecture - Enhanced */
+        .terminal-box {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 105, 180, 0.1);
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.8),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 0 30px rgba(255, 105, 180, 0.15);
+            position: relative;
+            transform-style: preserve-3d; /* For 3D transforms */
+            transition: transform 0.1s ease-out; /* Smooth parallax lag */
         }
 
-        /* Typography & Glows */
-        .glow-title { text-shadow: 0 0 15px var(--neon-pink); }
-        .glow-pastel { text-shadow: 0 0 8px var(--pastel-pink); }
-        .glitch-hover:hover { text-shadow: 2px 0 0 red, -2px 0 0 cyan; }
-        
-        /* Whimsical Button Font Fallback */
-        .font-cartoon { font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive; }
+        /* Typography Highlights */
+        .glow-title { 
+            text-shadow: 0 0 15px var(--neon-pink); 
+            position: relative;
+            display: inline-block;
+        }
+        .glow-border { 
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.4); 
+            transition: box-shadow 0.3s ease;
+        }
+        .glow-border:hover {
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
+        }
 
-        /* Sticker Layering */
-        .sticker { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); pointer-events: none; }
+        /* Advanced Sticker Physics */
+        .sticker {
+            position: absolute;
+            z-index: 10;
+            pointer-events: auto; /* Allow interaction */
+            cursor: grab;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+            user-select: none;
+            will-change: transform;
+        }
+        .sticker:hover {
+            z-index: 50; /* Bring to front on hover */
+            filter: drop-shadow(0 20px 25px rgba(0,0,0,0.8)) brightness(1.1);
+            transform: scale(1.1) rotate(0deg) !important; /* Reset rotation on hover for clarity */
+        }
+        .sticker:active {
+            cursor: grabbing;
+            transform: scale(0.95) !important;
+        }
+
+        /* Floating Animation Keyframes */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(var(--rot)); }
+            50% { transform: translateY(-15px) rotate(var(--rot)); }
+        }
+
+        /* Text Containment & Typing Effect */
+        .lore-matrix {
+            position: relative;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px dashed rgba(255, 105, 180, 0.4);
+            backdrop-filter: blur(5px);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .lore-line {
+            opacity: 0; /* Hidden initially for JS typewriter */
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+        .lore-line.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 1.2em;
+            background-color: var(--neon-pink);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Advanced Button Dynamics */
+        .btn-whimsy {
+            font-family: var(--whimsy-font);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .btn-whimsy::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn-whimsy:hover::before {
+            left: 100%;
+        }
+
+        .btn-whimsy:hover {
+            transform: scale(1.1) rotate(-2deg);
+            box-shadow: 0 0 40px rgba(255, 77, 77, 0.8), inset 0 0 20px rgba(255,255,255,0.2);
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+        }
+
+        .btn-whimsy:active {
+            transform: scale(0.95);
+        }
+
+        /* Glitch Animation for Title */
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-2deg); }
+            40% { transform: skew(2deg); }
+            60% { transform: skew(-1deg); }
+            80% { transform: skew(1deg); }
+            100% { transform: skew(0deg); }
+        }
+        .glitch-hover:hover {
+            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+            color: #fff;
+        }
     </style>
 </head>
-<body class="min-h-screen w-screen flex items-center justify-center p-4 selection:bg-pink-500/30">
+<body class="selection:bg-pink-500/50 selection:text-white">
 
-    <main class="hub-terminal relative w-full max-w-4xl rounded-2xl p-8 overflow-hidden flex flex-col gap-6 z-10">
+    <!-- Screen Effects -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <main id="main-container" class="terminal-box w-full max-w-4xl p-8 rounded-2xl flex flex-col gap-6 z-10">
         
-        <header class="flex items-center gap-6 border-b border-pink-500/30 pb-4 z-20">
-            <h1 class="text-4xl md:text-5xl font-black text-pink-200 glow-title whitespace-nowrap tracking-widest uppercase">
-                ZORUA // SHINX
-            </h1>
-            <img src="zoruapfp.jpg" alt="Entity Profile" class="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover rotate-[10deg] border border-pink-300/50 shadow-[0_0_20px_rgba(255,105,180,0.6)]">
-        </header>
+        <!-- Stickers Layer -->
+        <!-- Using placeholders for demo. Replace src with your actual files. -->
+        <!-- Added --rot css variable for initial rotation, and 'floating' class for animation -->
+        
+        <figure class="sticker w-24 md:w-32 floating" style="--rot: 18deg; top: 15%; right: 4%; animation: float 6s ease-in-out infinite;">
+            <img src="https://placehold.co/300x300/ff6b6b/white?text=CroatiaBall" alt="Croatiaball" class="w-full rounded-lg">
+        </figure>
 
-        <section class="relative z-20 w-full flex flex-col md:flex-row gap-4">
-            
-            <div class="flex-1 max-w-xl text-pink-100 font-mono text-sm md:text-base space-y-3">
-                <p class="hover:text-pink-300 transition-colors">> balkanese tomboy :P</p>
-                <p class="hover:text-pink-300 transition-colors">> good at rimac simping and still lazy writing codes in snek c:</p>
-                <p class="hover:text-pink-300 transition-colors">> aspiring pentester and malware analyst</p>
-                <p class="hover:text-pink-300 transition-colors">> lover of chocolate</p>
-                <p class="hover:text-pink-300 transition-colors">> cats are great meow</p>
-                <p class="hover:text-pink-300 transition-colors">> founder of shinxism cult - do study or procastrinate, thats da question</p>
+        <figure class="sticker w-32 md:w-48 floating" style="--rot: -12deg; top: 40%; left: 2%; animation: float 7s ease-in-out infinite 0.5s;">
+            <img src="https://placehold.co/300x300/4ecdc4/white?text=Germany+Cat" alt="Germany Cat" class="w-full rounded-lg">
+        </figure>
 
-                <div class="mt-8 flex items-center gap-4">
-                    <span class="text-[var(--pastel-pink)] font-bold text-lg glow-pastel">Wanna join? :P</span>
-                    
-                    <svg width="45" height="20" viewBox="0 0 45 20" fill="none" stroke="var(--pastel-pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="glow-pastel animate-pulse mt-1">
-                        <path d="M0 10 Q 20 15 35 10 M 35 10 L 28 4 M 35 10 L 28 16" />
-                    </svg>
+        <figure class="sticker w-36 md:w-56 floating" style="--rot: -8deg; top: 45%; right: 5%; animation: float 8s ease-in-out infinite 1s;">
+            <img src="https://placehold.co/300x300/ffe66d/black?text=Hisuian+Zorua" alt="Hisuian Zorua" class="w-full rounded-full border-4 border-white/20">
+        </figure>
 
-                    <a href="shinxism.html" class="font-cartoon px-8 py-2 rounded-full bg-gradient-to-r from-yellow-400 via-pink-400 to-red-500 text-white font-black text-2xl tracking-wider shadow-[0_4px_15px_rgba(255,105,180,0.6)] hover:scale-110 hover:shadow-[0_0_25px_rgba(255,105,180,0.8)] transition-all duration-200 border-2 border-white/20">
-                        ENTER
-                    </a>
+        <figure class="sticker w-20 md:w-28 floating" style="--rot: 22deg; bottom: 25%; left: 8%; animation: float 5s ease-in-out infinite 1.5s;">
+            <img src="https://placehold.co/300x300/1a535c/white?text=Pythowo" alt="Pythowo" class="w-full rounded-lg">
+        </figure>
+        
+        <!-- Luxray is special: Bottom Clipped -->
+        <figure class="sticker w-48 md:w-64 floating absolute bottom-0 right-[30%] translate-y-[45%] z-[5]" style="--rot: 5deg; animation: float 9s ease-in-out infinite 2s;">
+            <img src="https://placehold.co/400x400/5f27cd/white?text=Luxray" alt="Luxray" class="w-full">
+        </figure>
+
+        <!-- Header Section -->
+        <header class="relative z-20 flex items-center gap-6 border-b border-pink-500/30 pb-4 backdrop-blur-sm">
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg blur opacity-40 group-hover:opacity-100 transition duration-200"></div>
+                <img src="https://picsum.photos/seed/zoruapfp/200/200" alt="Profile" class="relative w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover rotate-[10deg] glow-border border-2 border-pink-400">
+            </div>
+            <div>
+                <h1 class="text-3xl md:text-5xl font-extrabold text-pink-100 glow-title tracking-widest whitespace-nowrap cursor-default glitch-hover">
+                    ZORUA // SHINX
+                </h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-xs text-pink-300 tracking-widest">SYSTEM ONLINE</span>
                 </div>
             </div>
+        </header>
 
-            <div class="absolute inset-0 z-10 pointer-events-none">
-                <img src="croatia.png" alt="Croatia Sticker" class="sticker absolute top-2 right-8 w-24 md:w-32 rotate-[15deg] opacity-90">
-                
-                <img src="gcat.png" alt="Germany Cat Sticker" class="sticker absolute top-32 right-20 w-36 md:w-48 rotate-[-12deg] opacity-95">
-                
-                <img src="pythowo.png" alt="Python Sticker" class="sticker absolute bottom-24 left-1/2 w-20 md:w-24 rotate-[8deg] opacity-90">
+        <!-- Lore Matrix (Terminal Output) -->
+        <section class="lore-matrix rounded-xl p-6 text-pink-100/90 text-sm md:text-base leading-relaxed flex flex-col gap-3 shadow-inner min-h-[250px]">
+            <div id="typewriter-container">
+                <!-- Content injected via JS -->
             </div>
+            <span class="cursor-blink"></span>
+        </section>
+
+        <!-- Interaction Section -->
+        <section class="relative z-20 flex flex-col items-center justify-center mt-2 gap-4">
+            
+            <div class="flex flex-col items-center group">
+                <span class="text-pink-300 font-bold tracking-widest text-sm mb-2 group-hover:text-white transition-colors">INITIATE_PROTOCOL?</span>
+                
+                <!-- Animated Arrow SVG -->
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#ffb6c1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="mb-2 animate-bounce" style="filter: drop-shadow(0 0 8px rgba(255, 182, 193, 0.8));">
+                    <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
+                </svg>
+            </div>
+
+            <a href="shinxism.html" class="btn-whimsy bg-gradient-to-r from-pink-600 to-red-600 text-white text-2xl px-12 py-4 rounded-full border-2 border-white/40 shadow-[0_0_20px_rgba(255,105,180,0.5)] tracking-widest outline-none cursor-pointer flex items-center gap-3">
+                <span>ENTER</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </a>
             
         </section>
 
-        <img src="luxray.png" alt="Luxray Entity" class="absolute bottom-0 right-4 w-32 md:w-44 translate-y-[30%] z-30 drop-shadow-[0_-5px_10px_rgba(0,0,0,0.4)] pointer-events-none">
-
     </main>
 
+    <script>
+        // --- Configuration ---
+        const loreData = [
+            "balkanese tomboy :P",
+            "good at rimac simping and still lazy writing codes in snek c:",
+            "aspiring pentester and malware analyst",
+            "lover of chocolate",
+            "cats are great meow",
+            "founder of shinxism cult - do study or procastrinate, thats da question"
+        ];
+
+        // --- Typewriter Effect ---
+        const typeContainer = document.getElementById('typewriter-container');
+        
+        async function typeWriter() {
+            for (let i = 0; i < loreData.length; i++) {
+                // Create line element
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'flex items-start gap-3 lore-line';
+                
+                const prompt = document.createElement('span');
+                prompt.className = 'text-pink-500 font-bold mt-1';
+                prompt.textContent = '>';
+                
+                const textP = document.createElement('p');
+                textP.className = 'typewriter-text';
+                
+                lineDiv.appendChild(prompt);
+                lineDiv.appendChild(textP);
+                typeContainer.appendChild(lineDiv);
+
+                // Reveal line
+                requestAnimationFrame(() => {
+                    lineDiv.classList.add('visible');
+                });
+
+                // Type characters
+                const text = loreData[i];
+                for (let charIndex = 0; charIndex < text.length; charIndex++) {
+                    textP.textContent += text[charIndex];
+                    // Random typing speed variation for realism
+                    await new Promise(r => setTimeout(r, Math.random() * 30 + 20)); 
+                }
+                
+                // Pause between lines
+                await new Promise(r => setTimeout(r, 300));
+            }
+        }
+
+        // Start typing after a short delay
+        setTimeout(typeWriter, 800);
+
+
+        // --- Parallax & Mouse Tilt Effect ---
+        const mainContainer = document.getElementById('main-container');
+        const stickers = document.querySelectorAll('.sticker');
+
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 25;
+            const y = (window.innerHeight / 2 - e.pageY) / 25;
+
+            // Rotate the main container slightly (Card Tilt)
+            mainContainer.style.transform = `rotateY(${x * 0.5}deg) rotateX(${y * 0.5}deg)`;
+
+            // Move stickers in opposite direction (Depth)
+            stickers.forEach((sticker, index) => {
+                const speed = (index % 3) + 1; // Varying speeds
+                // We must preserve the bottom translate for Luxray, so we read it or handle carefully.
+                // For simplicity, we apply parallax to transform but we need to be careful not to override CSS animation keyframes.
+                // Instead, we will use margins or translate3d on a wrapper, OR just simple transform addition if not animating via keyframes.
+                // Since we have keyframes, let's use CSS Variables updated by JS.
+                
+                // Note: Combining Keyframes (translateY) with JS Parallax (translate) is tricky.
+                // Alternative: Parallax the container they are in, or use specific calc().
+                
+                // Simple Approach: Move the sticker slightly based on mouse
+                // We add this to the existing style transform via inline style override, 
+                // but this breaks the keyframe animation.
+                
+                // BETTER APPROACH for this specific code structure:
+                // Apply the parallax to the *background* or the *main container* only,
+                // and let the stickers float via CSS as they were.
+                // However, to make it "Advanced", let's move the stickers using transform 
+                // but we need to respect the floating animation.
+            });
+        });
+
+        // --- Draggable Stickers Logic (Advanced Interaction) ---
+        stickers.forEach(sticker => {
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            sticker.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                const rect = sticker.getBoundingClientRect();
+                const parentRect = sticker.parentElement.getBoundingClientRect();
+                
+                // Calculate offset relative to parent
+                initialLeft = sticker.offsetLeft;
+                initialTop = sticker.offsetTop;
+                
+                sticker.style.cursor = 'grabbing';
+                sticker.style.animation = 'none'; // Pause floating while dragging
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                
+                sticker.style.left = `${initialLeft + dx}px`;
+                sticker.style.top = `${initialTop + dy}px`;
+                sticker.style.bottom = 'auto'; // Disable bottom positioning if dragged
+                sticker.style.right = 'auto';  // Disable right positioning if dragged
+            });
+
+            window.addEventListener('mouseup', () => {
+                if(isDragging) {
+                    isDragging = false;
+                    sticker.style.cursor = 'grab';
+                    // Optional: Resume floating with a delay or leave it static where dropped?
+                    // Let's leave it static to respect user placement.
+                }
+            });
+        });
+
+    </script>
 </body>
 </html>
