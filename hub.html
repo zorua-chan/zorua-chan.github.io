@@ -3,137 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HUB // SHINXISM_NEXUS</title>
+    <title>NEXUS // SHINX_HUB</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Pinkish-reddish chaotic scale */
-            --glass-bg: rgba(244, 63, 94, 0.08);
-            --glass-border: rgba(244, 63, 94, 0.25);
-            --neon-accent: rgba(255, 105, 180, 0.8);
+            /* Lighter, pinkish-reddish glassmorphism matrix */
+            --glass-bg: rgba(255, 105, 180, 0.15);
+            --glass-border: rgba(255, 105, 180, 0.4);
+            --neon-pink: rgba(255, 105, 180, 0.8);
+            --terminal-text: #fce7f3; /* text-pink-100 */
         }
         
         body { 
             background-color: #070709; 
-            overflow-x: hidden; 
+            overflow-x: hidden; /* Prevent horizontal scroll from protruding stickers */
             font-family: 'Courier New', monospace; 
-            /* Hide the default OS cursor to replace it with the Zorua daemon */
-            cursor: none;
+            color: var(--terminal-text);
         }
 
-        /* Enforce cursor-none on all interactive elements to prevent flickering */
-        a, button, input { cursor: none !important; }
-
-        /* The Custom Zorua Cursor */
-        #zorua-cursor {
-            position: fixed;
-            top: 0; left: 0;
-            width: 48px; height: 48px;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%); /* Center the gif on the mouse coordinates */
-            transition: transform 0.05s linear;
-        }
-
-        /* Glassmorphism Panel - No overflow:hidden so Luxray can break the bounds */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 20px rgba(244, 63, 94, 0.05);
-        }
-
-        /* CRT Scanlines */
+        /* The Aesthetic Engine - Base Layer */
         .scanlines {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
                         linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
             background-size: 100% 4px, 6px 100%; 
-            z-index: -10; 
+            z-index: 1; 
             pointer-events: none;
         }
 
-        /* Hardware-accelerated Particle Canvas */
-        #glitter-engine { position: fixed; top: 0; left: 0; z-index: -20; }
+        #glitter-engine { position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; }
 
-        /* Glowing Text Utilities */
-        .glow-text { text-shadow: 0 0 10px var(--neon-accent); }
-        .glow-box { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
+        /* The Hub Terminal Container */
+        .glass-terminal {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 105, 180, 0.1);
+            /* Ensure the box itself doesn't hide overflowing assets like Luxray */
+            overflow: visible; 
+        }
+
+        /* Typographic Overrides */
+        .glow-title { text-shadow: 0 0 15px var(--neon-pink), 0 0 5px rgba(255, 255, 255, 0.5); }
+        .whimsy-font { font-family: 'Balsamiq Sans', cursive; }
+
+        /* Dynamic Glitch Hover for the Button */
+        .btn-glitch {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 4px 4px 0px rgba(255, 77, 77, 0.8);
+        }
+        .btn-glitch:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(255, 105, 180, 0.9);
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+        }
+        .btn-glitch:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px transparent;
+        }
+
+        /* Sticker Physics (Hover behaviors for the chaotic elements) */
+        .sticker { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); filter: drop-shadow(0 8px 10px rgba(0,0,0,0.5)); }
+        .sticker:hover { transform: scale(1.15) rotate(0deg) !important; z-index: 50; }
     </style>
 </head>
-<body class="min-h-screen w-screen flex items-center justify-center p-8 selection:bg-rose-500/30 text-rose-100 relative">
+<body class="w-screen min-h-screen selection:bg-pink-500/30 flex flex-col items-center pt-20 pb-40">
 
     <canvas id="glitter-engine"></canvas>
     <div class="scanlines"></div>
 
-    <img src="zoruarun.gif" id="zorua-cursor" alt="cursor">
-
-    <main class="glass-panel relative w-full max-w-2xl rounded-2xl p-8 md:p-12 border border-rose-500/30 flex flex-col gap-6 mt-12">
+    <main class="glass-terminal relative w-[92%] max-w-5xl rounded-2xl p-8 md:p-12 z-10 mt-10">
         
-        <img src="croatia.png" alt="Croatia" class="absolute -top-8 -right-6 w-20 h-20 object-contain rotate-12 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] z-10 hover:rotate-[24deg] transition-transform duration-300">
-        
-        <img src="gcat.png" alt="Germany Cat" class="absolute top-[40%] -left-12 w-24 h-24 object-contain -rotate-6 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] z-10 hover:-translate-y-2 transition-transform duration-300">
-        
-        <img src="luxray.png" alt="Luxray" class="absolute -bottom-16 right-10 w-40 object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] z-20 hover:scale-105 transition-transform duration-300">
-
-        <header class="flex items-center gap-6 relative z-30">
-            <div class="relative shrink-0">
-                <div class="absolute -inset-1 bg-gradient-to-tr from-rose-500 to-pink-500 rounded-lg blur opacity-50 rotate-[20deg]"></div>
-                <img src="zoruapfp.jpg" alt="Profile" class="relative w-24 h-24 object-cover rounded-lg border-2 border-rose-400/80 rotate-[20deg] shadow-[0_0_20px_rgba(244,63,94,0.6)]">
-            </div>
-            
-            <h1 class="text-3xl md:text-5xl font-extrabold text-rose-200 glow-text tracking-widest ml-4">
+        <header class="flex items-center gap-6 border-b border-pink-400/30 pb-6 relative z-20">
+            <img src="zoruapfp.jpg" alt="Zorua Profile" class="w-24 h-24 md:w-32 md:h-32 rounded-lg object-cover rotate-[15deg] border-2 border-pink-400 shadow-[0_0_20px_rgba(255,105,180,0.6)]">
+            <h1 class="text-3xl md:text-5xl font-extrabold glow-title text-pink-100 whitespace-nowrap tracking-wider">
                 ZORUA // SHINX
             </h1>
         </header>
 
-        <section class="mt-6 text-sm md:text-base leading-relaxed text-rose-200/90 space-y-2 border-l-2 border-rose-500/40 pl-4 relative z-30">
-            <p>> balkanese tomboy good at rimac simping and still lazy writing codes in snek c:</p>
-            <p>> aspiring pentester and malware analyst</p>
-            <p>> lover of chocolate</p>
-            <p>> cats are great (so are foxes)</p>
-            <p class="font-bold text-rose-300 glow-text">> founder of shinxism cult - do learn or procastrinate, thats da question</p>
+        <section class="mt-8 text-sm md:text-base leading-relaxed space-y-3 relative z-20 pl-2 md:pl-6 text-pink-50/90 font-bold">
+            <p><span class="text-pink-400 mr-2">></span>balkanese tomboy :P</p>
+            <p><span class="text-pink-400 mr-2">></span>good at rimac simping and still lazy writing codes in snek c:</p>
+            <p><span class="text-pink-400 mr-2">></span>aspiring pentester and malware analyst</p>
+            <p><span class="text-pink-400 mr-2">></span>lover of chocolate</p>
+            <p><span class="text-pink-400 mr-2">></span>cats are great <i class="text-pink-300">*meow*</i></p>
+            <p><span class="text-pink-400 mr-2">></span>founder of shinxism cult - do study or procastrinate, thats da question</p>
         </section>
 
-        <div class="mt-8 flex flex-col items-center justify-center relative z-30 w-full">
+        <div class="mt-12 flex flex-col md:flex-row items-center justify-end gap-4 relative z-20 border-t border-pink-400/20 pt-6">
             
-            <div class="flex items-center justify-center gap-3 mb-2 translate-x-12">
-                <span class="font-mono text-pink-300/80 text-sm rotate-[-5deg]">Wanna join? :P</span>
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(244,63,94,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(15deg);">
-                    <path d="M12 4 C 12 10 18 16 12 20 M 8 16 L 12 20 L 16 16" />
+            <div class="flex items-center gap-3">
+                <span class="text-pink-200 font-bold text-lg rotate-[-5deg] tracking-wide">Wanna join? :P</span>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffb6c1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse" style="transform: rotate(15deg);">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
             </div>
+            
+            <a href="shinxism.html" class="btn-glitch whimsy-font bg-gradient-to-r from-pink-500 to-purple-500 text-white text-2xl px-8 py-3 rounded-xl border-2 border-white tracking-widest outline-none">
+                ENTER
+            </a>
 
-            <button onclick="window.location.href='shinxism.html'" class="relative group px-8 py-3 bg-rose-950/40 border border-rose-500 text-rose-200 font-bold tracking-widest uppercase overflow-hidden glow-box transition-all duration-300 hover:bg-rose-900/60 hover:text-white hover:scale-105 active:scale-95 rounded-sm">
-                <span class="relative z-10">ENTER</span>
-                <div class="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-rose-500/20 to-transparent -translate-x-full group-hover:animate-[shimmer_0.5s_forwards] z-0"></div>
-            </button>
         </div>
+
+        <img src="croatia.png" alt="Croatiaball" class="sticker absolute -top-8 -left-6 w-24 md:w-32 rotate-[-12deg] z-30">
+
+        <img src="gcat.png" alt="Germany Cat" class="sticker absolute top-6 right-8 w-20 md:w-28 rotate-[15deg] z-10 opacity-90">
+
+        <img src="sspin.gif" alt="Spinning Shinx" class="sticker absolute top-1/2 -left-10 w-24 md:w-32 -translate-y-1/2 rotate-[-5deg] z-30">
+
+        <img src="zorua-hisui.png" alt="Hisuian Zorua" class="sticker absolute bottom-16 -right-8 w-28 md:w-36 rotate-[8deg] z-30">
+
+        <img src="pythowo.png" alt="Python UWU" class="sticker absolute bottom-24 right-32 w-16 md:w-20 rotate-[-18deg] z-10 opacity-85">
+
+        <img src="luxray.png" alt="Luxray" class="sticker absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[45%] w-48 md:w-64 z-40 pointer-events-auto">
 
     </main>
 
     <script>
-        /** * MODULE: Custom Cursor Override */
-        const cursor = document.getElementById('zorua-cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-
-        /** * MODULE: Hardware-Accelerated Aesthetic Engine */
         const canvas = document.getElementById('glitter-engine');
         const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
         const particlesArray = [];
-        const colors = ['rgba(244, 63, 94, 0.6)', 'rgba(255, 105, 180, 0.6)', 'rgba(255, 255, 255, 0.3)'];
+        const colors = ['rgba(255, 105, 180, 0.6)', 'rgba(255, 182, 193, 0.6)', 'rgba(255, 77, 77, 0.5)', 'rgba(255, 255, 255, 0.3)'];
 
         class Particle {
             constructor() {
@@ -143,16 +138,18 @@
                 this.speedY = Math.random() * 1.5 + 0.5;
                 this.speedX = (Math.random() - 0.5) * 0.5;
                 this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.opacity = Math.random() * 0.5 + 0.2;
             }
             update() {
-                this.y += this.speedY;
+                this.y -= this.speedY; // Floating up instead of down for the hub
                 this.x += this.speedX;
-                if (this.y > canvas.height) {
-                    this.y = -10;
+                if (this.y < 0) {
+                    this.y = canvas.height + this.size;
                     this.x = Math.random() * canvas.width;
                 }
             }
             draw() {
+                ctx.globalAlpha = this.opacity;
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -160,13 +157,25 @@
             }
         }
 
-        for (let i = 0; i < 100; i++) particlesArray.push(new Particle());
+        function initParticles() {
+            for (let i = 0; i < 150; i++) particlesArray.push(new Particle());
+        }
 
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particlesArray.forEach(p => { p.update(); p.draw(); });
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
             requestAnimationFrame(animateParticles);
         }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        initParticles();
         animateParticles();
     </script>
 </body>
