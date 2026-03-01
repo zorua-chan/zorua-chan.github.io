@@ -7,324 +7,459 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             --glass-bg: rgba(20, 10, 15, 0.6);
             --glass-border: rgba(255, 105, 180, 0.3);
             --neon-pink: #ff69b4;
-            --neon-blue: #00f3ff;
-            --terminal-font: 'Fira Code', monospace;
+            --neon-accent: #ff1493;
+            --terminal-font: 'Share Tech Mono', monospace;
             --whimsy-font: 'Comic Neue', cursive;
         }
 
         body {
             background-color: #050505;
+            /* Animated Grid Background */
+            background-image: 
+                linear-gradient(rgba(255, 105, 180, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 105, 180, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            font-family: var(--terminal-font);
             color: #fce7f3;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
-            font-family: var(--terminal-font);
-            /* Advanced Background Grid */
-            background-image: 
-                linear-gradient(rgba(255, 77, 106, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 77, 106, 0.03) 1px, transparent 1px),
-                radial-gradient(circle at 50% 50%, rgba(255, 20, 60, 0.1) 0%, transparent 70%);
-            background-size: 40px 40px, 40px 40px, 100% 100%;
-            perspective: 1000px; /* For 3D Tilt */
+            overflow: hidden; /* Prevent scrollbars during dragging */
+            position: relative;
         }
 
-        /* Scanline Overlay */
+        /* CRT Scanline Effect Overlay */
         body::after {
             content: " ";
             display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 50;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 2;
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
         }
 
-        /* --- Terminal Architecture --- */
-        .terminal-window {
+        /* Main Container */
+        .terminal-box {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            box-shadow: 
-                0 0 0 1px rgba(255, 105, 180, 0.1),
-                0 20px 50px rgba(0, 0, 0, 0.8),
-                0 0 80px rgba(255, 0, 80, 0.15);
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
+            box-shadow: 0 0 40px rgba(255, 20, 147, 0.15), inset 0 0 20px rgba(0,0,0,0.5);
             position: relative;
-            overflow: hidden; /* Clips Luxray bottom */
+            z-index: 10;
+            overflow: visible; /* Allow stickers to hang out slightly if needed */
+            transition: transform 0.1s;
         }
 
-        /* --- Header & Typography --- */
-        .window-controls span {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-        
-        .glitch-text {
+        /* Title Glitch Animation */
+        .glitch-title {
             position: relative;
-            color: #fff;
-            text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-blue);
-            animation: glitch-anim 3s infinite linear alternate-reverse;
+            animation: glitch-skew 3s infinite linear alternate-reverse;
+        }
+        .glitch-title::before, .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch-title::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch-title::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
         }
 
         @keyframes glitch-anim {
-            0% { text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-blue); }
-            25% { text-shadow: -2px 2px var(--neon-pink), 2px -2px var(--neon-blue); }
-            50% { text-shadow: 2px -2px var(--neon-pink), -2px 2px var(--neon-blue); transform: skew(0.5deg); }
-            75% { text-shadow: -2px -2px var(--neon-pink), 2px 2px var(--neon-blue); }
-            100% { text-shadow: 1px 1px var(--neon-pink), -1px -1px var(--neon-blue); }
+            0% { clip: rect(15px, 9999px, 81px, 0); }
+            5% { clip: rect(68px, 9999px, 8px, 0); }
+            10% { clip: rect(6px, 9999px, 14px, 0); }
+            15% { clip: rect(98px, 9999px, 4px, 0); }
+            100% { clip: rect(24px, 9999px, 66px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 10px, 0); }
+            5% { clip: rect(34px, 9999px, 89px, 0); }
+            10% { clip: rect(10px, 9999px, 2px, 0); }
+            15% { clip: rect(54px, 9999px, 21px, 0); }
+            100% { clip: rect(12px, 9999px, 66px, 0); }
+        }
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            10% { transform: skew(-1deg); }
+            20% { transform: skew(0deg); }
+            100% { transform: skew(0deg); }
         }
 
-        /* --- Sticker Physics --- */
+        /* Interactive Stickers */
         .sticker {
             position: absolute;
-            z-index: 10;
-            pointer-events: none;
+            cursor: grab;
+            z-index: 50; /* Above text */
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
+            transition: transform 0.1s;
             user-select: none;
-            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6));
-            /* Creative Floating Animation */
+            touch-action: none; /* Important for drag physics */
+            /* Initial breath animation */
             animation: float 6s ease-in-out infinite;
         }
-
-        /* Specific Sticker Positions & Delays */
-        .sticker-pos-1 { top: -5%; right: -5%; transform: rotate(15deg); animation-delay: 0s; } /* Croatia */
-        .sticker-pos-2 { top: 10%; left: -8%; transform: rotate(-10deg); animation-delay: 1.5s; } /* Gcat */
-        .sticker-pos-3 { bottom: 20%; right: -10%; transform: rotate(-5deg); animation-delay: 3s; } /* Hisui Zorua */
-        .sticker-pos-4 { bottom: 30%; left: -5%; transform: rotate(12deg); animation-delay: 0.5s; } /* Pythowo */
-
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(var(--rot)); }
-            50% { transform: translateY(-20px) rotate(var(--rot)); }
-            100% { transform: translateY(0px) rotate(var(--rot)); }
+        
+        .sticker:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            z-index: 100 !important;
         }
 
-        /* Luxray Static Position */
-        .luxray-static {
+        .sticker img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        /* Luxray Specifics */
+        .luxray-container {
             position: absolute;
-            bottom: 0;
+            bottom: -10px; /* Slightly overlapping bottom border */
             left: 50%;
-            transform: translateX(-50%) translateY(45%); /* Pushes bottom half out of view */
-            z-index: 20;
+            transform: translateX(-50%);
+            z-index: 20; /* Above background, below draggable stickers */
+            pointer-events: none; /* Static, non-interactive */
             width: 220px;
-            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.4));
         }
 
-        /* --- Lore Matrix (Glass Content) --- */
+        /* Text Containment */
         .lore-matrix {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px dashed rgba(255, 105, 180, 0.3);
             position: relative;
-            z-index: 30; /* Above stickers */
-            backdrop-filter: blur(5px);
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            backdrop-filter: blur(8px);
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Typewriter Entry Animation */
-        .lore-item {
-            opacity: 0;
-            transform: translateX(-10px);
-            animation: slideIn 0.5s forwards;
+        /* Button Dynamics */
+        .btn-enter {
+            background: linear-gradient(45deg, #ff00cc, #333399);
+            background-size: 200% 200%;
+            animation: gradient-anim 3s ease infinite;
+            transition: all 0.3s ease;
         }
-        /* Delays handled in inline styles */
+        .btn-enter:hover {
+            transform: scale(1.05) rotate(-2deg);
+            box-shadow: 0 0 30px rgba(255, 0, 204, 0.6);
+        }
 
-        @keyframes slideIn {
-            to { opacity: 1; transform: translateX(0); }
+        @keyframes gradient-anim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* --- Button Dynamics --- */
-        .btn-whimsy {
-            position: relative;
-            overflow: hidden;
-            font-family: var(--whimsy-font);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(var(--rot)); }
+            50% { transform: translateY(-10px) rotate(calc(var(--rot) + 2deg)); }
         }
-        .btn-whimsy::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s;
+
+        /* Cursor Blink */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
         }
-        .btn-whimsy:hover::before {
-            left: 100%;
-        }
-        .btn-whimsy:hover {
-            transform: scale(1.1) rotate(-2deg);
-            box-shadow: 0 0 30px rgba(255, 20, 60, 0.8);
-            border-color: #fff;
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     </style>
 </head>
-<body class="selection:bg-pink-500/30">
+<body class="selection:bg-pink-500/50 selection:text-white">
 
-    <!-- Main 3D Container -->
-    <main id="tilt-card" class="terminal-window w-[90%] max-w-5xl rounded-3xl p-1 md:p-2 flex flex-col gap-0 ring-1 ring-white/10">
+    <main class="terminal-box w-[95%] max-w-4xl min-h-[600px] p-6 md:p-10 rounded-3xl flex flex-col relative" id="main-terminal">
         
-        <!-- Window Header -->
-        <div class="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-black/20 rounded-t-2xl">
-            <div class="flex items-center gap-2">
-                <div class="window-controls"><span class="bg-red-500"></span></div>
-                <div class="window-controls"><span class="bg-yellow-500"></span></div>
-                <div class="window-controls"><span class="bg-green-500"></span></div>
+        <!-- Header -->
+        <header class="relative z-10 flex flex-col md:flex-row items-center gap-6 border-b border-pink-500/30 pb-6 mb-4">
+            <div class="relative group">
+                <div class="absolute inset-0 bg-pink-500 blur-lg opacity-40 group-hover:opacity-60 transition duration-500 rounded-lg"></div>
+                <img src="zoruapfp.jpg" alt="Profile" class="relative w-24 h-24 md:w-28 md:h-28 rounded-lg object-cover border-2 border-pink-400 rotate-3">
             </div>
-            <div class="text-xs text-pink-300/50 font-mono tracking-widest">root@shinx-nexus:~</div>
+            
+            <div class="text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-2 text-pink-400 text-xs tracking-[0.3em] mb-1 opacity-80">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    SYSTEM ONLINE
+                </div>
+                <h1 class="glitch-title text-4xl md:text-6xl font-extrabold text-white tracking-tighter" data-text="ZORUA // SHINX">
+                    ZORUA // SHINX
+                </h1>
+            </div>
+        </header>
+
+        <!-- Draggable Stickers (Will be initialized by JS) -->
+        <!-- Note: Images are sized via CSS (w-40) for consistency -->
+        
+        <!-- Croatia - High Visibility -->
+        <div class="sticker w-40 h-40 flex items-center justify-center" style="--rot: 15deg;">
+            <img src="croatia.png" alt="Croatia" draggable="false">
         </div>
 
-        <!-- Inner Content Area -->
-        <div class="relative flex flex-col p-6 md:p-10 min-h-[600px]">
+        <!-- Gcat - High Visibility -->
+        <div class="sticker w-40 h-40 flex items-center justify-center" style="--rot: -12deg;">
+            <img src="gcat.png" alt="Gcat" draggable="false">
+        </div>
+
+        <!-- Pythowo - High Visibility -->
+        <div class="sticker w-40 h-40 flex items-center justify-center" style="--rot: 8deg;">
+            <img src="pythowo.png" alt="Pythowo" draggable="false">
+        </div>
+
+        <!-- Static Luxray (Bottom) -->
+        <div class="luxray-container">
+            <img src="luxray.png" alt="Luxray" style="width: 100%; filter: drop-shadow(0 0 10px rgba(255,105,180,0.3));">
+        </div>
+
+        <!-- Lore / Content -->
+        <section class="lore-matrix rounded-2xl p-6 md:p-8 text-pink-100/90 text-sm md:text-base leading-relaxed flex flex-col gap-4 z-10 mt-2">
             
-            <!-- SCATTERED STICKERS (Creative, Floating, Visible) -->
-            <!-- Note: Setting --rot via inline style to keep the rotation consistent during float animation -->
+            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                <span class="text-pink-500 font-bold mt-1">></span>
+                <p><span class="text-pink-400">identity:</span> balkanese tomboy :P</p>
+            </div>
             
-            <!-- 1. Croatia (Nationality, Prominent Top Right) -->
-            <img src="croatia.png" alt="Croatia" 
-                 class="sticker sticker-pos-1 w-32 md:w-48" 
-                 style="--rot: 15deg; animation-delay: 0s;">
+            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                <span class="text-pink-500 font-bold mt-1">></span>
+                <p><span class="text-pink-400">skills:</span> good at rimac simping and lazy coding in snek c:</p>
+            </div>
             
-            <!-- 2. Gcat (Top Left) -->
-            <img src="gcat.png" alt="Germany Cat" 
-                 class="sticker sticker-pos-2 w-32 md:w-48" 
-                 style="--rot: -12deg; animation-delay: 1.5s;">
+            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                <span class="text-pink-500 font-bold mt-1">></span>
+                <p><span class="text-pink-400">career:</span> aspiring pentester and malware analyst</p>
+            </div>
+            
+            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                <span class="text-pink-500 font-bold mt-1">></span>
+                <p><span class="text-pink-400">fav:</span> lover of chocolate</p>
+            </div>
 
-            <!-- 3. Hisui Zorua (Mid Right, Visible) -->
-            <img src="hisui-zorua.png" alt="Hisuian Zorua" 
-                 class="sticker sticker-pos-3 w-36 md:w-52" 
-                 style="--rot: -8deg; animation-delay: 3s;">
+            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                <span class="text-pink-500 font-bold mt-1">></span>
+                <p><span class="text-pink-400">mood:</span> cats are great meow</p>
+            </div>
+            
+            <div class="flex items-start gap-3 group hover:translate-x-1 transition-transform duration-300">
+                <span class="text-pink-500 font-bold mt-1">></span>
+                <p><span class="text-pink-400">faction:</span> founder of shinxism cult - do study or procrastinate, that's da question<span class="cursor-blink">_</span></p>
+            </div>
+        </section>
 
-            <!-- 4. Pythowo (Bottom Left) -->
-            <img src="pythowo.png" alt="Pythowo" 
-                 class="sticker sticker-pos-4 w-32 md:w-48" 
-                 style="--rot: 12deg; animation-delay: 0.5s;">
-
-            <!-- STATIC LUXRAY (Bottom Center, Cut off) -->
-            <img src="luxray.png" alt="Luxray" class="luxray-static static-img">
-
-            <!-- Content Layer (Relative) -->
-            <div class="relative z-30 flex flex-col gap-8 items-center w-full">
+        <!-- Footer / CTA -->
+        <section class="relative z-10 flex flex-col items-center justify-center mt-auto pt-8 gap-4">
+            <div class="flex flex-col items-center animate-bounce">
+                <span class="text-pink-300 font-bold tracking-widest text-xs md:text-sm mb-2 bg-black/30 px-3 py-1 rounded-full border border-pink-500/20">
+                    Wanna join? :P
+                </span>
                 
-                <!-- Header -->
-                <header class="flex flex-col md:flex-row items-center gap-6 w-full justify-center md:justify-start border-b border-pink-500/20 pb-6">
-                    <div class="relative group">
-                        <!-- Glowing Ring -->
-                        <div class="absolute inset-0 bg-gradient-to-tr from-pink-500 to-blue-500 rounded-xl blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
-                        <img src="zoruapfp.jpg" alt="Profile" 
-                             class="relative w-24 h-24 md:w-32 md:h-32 rounded-xl object-cover border-2 border-white/50 shadow-2xl rotate-3 hover:rotate-0 transition duration-300">
-                    </div>
-                    
-                    <div class="flex flex-col text-center md:text-left">
-                        <h1 class="text-4xl md:text-6xl font-black text-white glitch-title tracking-tighter">
-                            <span class="glitch-text">ZORUA</span> <span class="text-pink-500">/</span> <span style="color: #00f3ff;">SHINX</span>
-                        </h1>
-                        <p class="text-pink-200/60 font-mono text-sm mt-2 tracking-[0.3em] uppercase">System Status: Online</p>
-                    </div>
-                </header>
-
-                <!-- Lore Matrix -->
-                <section class="lore-matrix w-full max-w-2xl rounded-2xl p-6 text-pink-100 text-sm md:text-base leading-relaxed flex flex-col gap-4">
-                    
-                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 0.2s;">
-                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
-                        <p>balkanese tomboy :P</p>
-                    </div>
-                    
-                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 0.4s;">
-                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
-                        <p>good at rimac simping and still lazy writing codes in snek c:</p>
-                    </div>
-                    
-                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 0.6s;">
-                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
-                        <p>aspiring pentester and malware analyst</p>
-                    </div>
-                    
-                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 0.8s;">
-                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
-                        <p>lover of chocolate</p>
-                    </div>
-                    
-                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 1.0s;">
-                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
-                        <p>cats are great meow</p>
-                    </div>
-                    
-                    <div class="flex items-start gap-3 lore-item" style="animation-delay: 1.2s;">
-                        <span class="text-pink-500 font-bold font-mono shrink-0 mt-0.5">>></span>
-                        <p>founder of shinxism cult - do study or procastrinate, thats da question</p>
-                    </div>
-                </section>
-
-                <!-- Call to Action -->
-                <section class="relative z-40 flex flex-col items-center justify-center mt-4 gap-4">
-                    
-                    <div class="flex flex-col items-center opacity-80">
-                        <span class="text-pink-300 font-bold tracking-[0.2em] text-xs md:text-sm mb-2">INITIALIZE SEQUENCE?</span>
-                        <!-- Animated Arrow -->
-                        <svg width="30" height="30" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-400 animate-bounce">
-                            <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
-                        </svg>
-                    </div>
-
-                    <a href="shinxism.html" class="btn-whimsy bg-gradient-to-r from-pink-600 via-red-500 to-pink-600 text-white text-xl md:text-2xl px-12 py-4 rounded-full border-2 border-white/40 shadow-[0_0_30px_rgba(236,72,153,0.5)] tracking-widest font-bold outline-none cursor-pointer">
-                        ENTER
-                    </a>
-                    
-                </section>
-
+                <svg width="32" height="32" viewBox="0 0 40 40" fill="none" stroke="#ffb6c1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 5 Q 35 20 20 35 M 12 27 L 20 35 L 28 27" />
+                </svg>
             </div>
-        </div>
-        
-        <!-- Footer Status -->
-        <div class="bg-black/40 px-4 py-2 text-[10px] text-pink-500/50 font-mono flex justify-between border-t border-white/5">
-            <span id="time-display">00:00:00</span>
-            <span>MEM: 64TB OK</span>
-        </div>
+
+            <a href="shinxism.html" class="btn-enter text-white text-xl md:text-2xl font-black px-12 py-4 rounded-full border-2 border-white/20 shadow-lg tracking-widest uppercase flex items-center gap-3 group">
+                Enter System
+                <span class="group-hover:translate-x-1 transition-transform">-></span>
+            </a>
+        </section>
+
     </main>
 
     <script>
-        // 1. Live Clock
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('time-display').innerText = now.toLocaleTimeString('en-US', { hour12: false });
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        // 2. 3D Tilt Effect (Mouse movement)
-        const card = document.getElementById('tilt-card');
-        const body = document.body;
-
-        body.addEventListener('mousemove', (e) => {
-            if (window.innerWidth < 768) return; // Disable on mobile
-
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
+        /**
+         * Advanced Physics & Interaction Script
+         * Handles: Dragging, Momentum, Boundary Collision, Floating Animation
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            const stickers = document.querySelectorAll('.sticker');
+            const terminal = document.getElementById('main-terminal');
             
-            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
+            // Physics Configuration
+            const FRICTION = 0.94; // How quickly they stop (0 to 1)
+            const BOUNCE = 0.7;    // How bouncy the walls are
+            
+            stickers.forEach(sticker => {
+                // Initial Random Positioning (Scattered)
+                // We use percentages to keep it responsive
+                const randX = Math.random() * 60 + 10; // 10% to 70% (avoid edges)
+                const randY = Math.random() * 60 + 10;
+                
+                sticker.style.left = `${randX}%`;
+                sticker.style.top = `${randY}%`;
+                
+                // State object for physics
+                const state = {
+                    isDragging: false,
+                    startX: 0, startY: 0,
+                    initialLeft: 0, initialTop: 0,
+                    vx: 0, vy: 0, // Velocity
+                    lastX: 0, lastY: 0,
+                    lastTime: 0
+                };
 
-        // Reset on mouse leave
-        body.addEventListener('mouseleave', () => {
-            card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-        });
+                // Mouse Down / Touch Start
+                const startDrag = (e) => {
+                    e.preventDefault();
+                    state.isDragging = true;
+                    
+                    // Get client coordinates
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-        // 3. Console Easter Egg
-        console.log("%c SHINX_NEXUS LOADED ", "background: #ff69b4; color: #fff; padding: 5px; font-weight: bold;");
-        console.log("Welcome to the cult. :P");
+                    state.startX = clientX;
+                    state.startY = clientY;
+                    
+                    // Get current position (pixel values)
+                    const rect = sticker.getBoundingClientRect();
+                    const parentRect = terminal.getBoundingClientRect();
+                    
+                    // Calculate relative position within terminal
+                    state.initialLeft = rect.left - parentRect.left;
+                    state.initialTop = rect.top - parentRect.top;
+                    
+                    state.vx = 0;
+                    state.vy = 0;
+                    state.lastX = clientX;
+                    state.lastY = clientY;
+                    state.lastTime = performance.now();
+
+                    sticker.style.animation = 'none'; // Stop floating while dragging
+                    sticker.style.transition = 'none'; // Remove transition for instant follow
+                };
+
+                // Mouse Move / Touch Move
+                const moveDrag = (e) => {
+                    if (!state.isDragging) return;
+                    e.preventDefault(); // Prevent scrolling on mobile
+
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                    const deltaX = clientX - state.startX;
+                    const deltaY = clientY - state.startY;
+
+                    let newLeft = state.initialLeft + deltaX;
+                    let newTop = state.initialTop + deltaY;
+
+                    // Boundaries (Keep inside terminal)
+                    const maxLeft = terminal.offsetWidth - sticker.offsetWidth;
+                    const maxTop = terminal.offsetHeight - sticker.offsetHeight;
+
+                    if (newLeft < 0) newLeft = 0;
+                    if (newLeft > maxLeft) newLeft = maxLeft;
+                    if (newTop < 0) newTop = 0;
+                    if (newTop > maxTop) newTop = maxTop;
+
+                    sticker.style.left = `${newLeft}px`;
+                    sticker.style.top = `${newTop}px`;
+
+                    // Calculate velocity for "throw" effect
+                    const now = performance.now();
+                    const dt = now - state.lastTime;
+                    if (dt > 0) {
+                        state.vx = (clientX - state.lastX) / dt * 15; // Multiplier adds weight
+                        state.vy = (clientY - state.lastY) / dt * 15;
+                    }
+                    
+                    state.lastX = clientX;
+                    state.lastY = clientY;
+                    state.lastTime = now;
+                };
+
+                // Mouse Up / Touch End
+                const endDrag = () => {
+                    if (!state.isDragging) return;
+                    state.isDragging = false;
+                    
+                    // Apply momentum
+                    requestAnimationFrame(momentumLoop);
+                };
+
+                // Momentum Loop (Physics after release)
+                const momentumLoop = () => {
+                    if (state.isDragging) return;
+
+                    // Apply Friction
+                    state.vx *= FRICTION;
+                    state.vy *= FRICTION;
+
+                    // Stop if very slow
+                    if (Math.abs(state.vx) < 0.1 && Math.abs(state.vy) < 0.1) {
+                        state.vx = 0;
+                        state.vy = 0;
+                        // Resume floating animation slightly modified
+                        sticker.style.animation = 'float 6s ease-in-out infinite';
+                        return;
+                    }
+
+                    // Update Position
+                    let currentLeft = parseFloat(sticker.style.left) || 0;
+                    let currentTop = parseFloat(sticker.style.top) || 0;
+
+                    let nextLeft = currentLeft + state.vx;
+                    let nextTop = currentTop + state.vy;
+
+                    // Wall Collisions
+                    const maxLeft = terminal.offsetWidth - sticker.offsetWidth;
+                    const maxTop = terminal.offsetHeight - sticker.offsetHeight;
+
+                    // Bounce X
+                    if (nextLeft <= 0) {
+                        nextLeft = 0;
+                        state.vx = -state.vx * BOUNCE;
+                    } else if (nextLeft >= maxLeft) {
+                        nextLeft = maxLeft;
+                        state.vx = -state.vx * BOUNCE;
+                    }
+
+                    // Bounce Y
+                    if (nextTop <= 0) {
+                        nextTop = 0;
+                        state.vy = -state.vy * BOUNCE;
+                    } else if (nextTop >= maxTop) {
+                        nextTop = maxTop;
+                        state.vy = -state.vy * BOUNCE;
+                    }
+
+                    sticker.style.left = `${nextLeft}px`;
+                    sticker.style.top = `${nextTop}px`;
+
+                    requestAnimationFrame(momentumLoop);
+                };
+
+                // Event Listeners
+                sticker.addEventListener('mousedown', startDrag);
+                window.addEventListener('mousemove', moveDrag);
+                window.addEventListener('mouseup', endDrag);
+
+                sticker.addEventListener('touchstart', startDrag, { passive: false });
+                window.addEventListener('touchmove', moveDrag, { passive: false });
+                window.addEventListener('touchend', endDrag);
+            });
+        });
     </script>
 </body>
 </html>
