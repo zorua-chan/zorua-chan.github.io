@@ -348,440 +348,350 @@
         </section>
 
     </main>
-<div class="w-full flex items-center justify-center py-12 relative z-20">
-    <div class="h-[1px] w-full max-w-6xl bg-gradient-to-r from-transparent via-pink-500/50 to-transparent relative">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-[#050505] border border-pink-500/50 rotate-45"></div>
-        <div class="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-pink-500 shadow-[0_0_10px_#ff69b4] rotate-45"></div>
-        <div class="absolute top-1/2 right-1/3 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-pink-500 shadow-[0_0_10px_#ff69b4] rotate-45"></div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
 
 <style>
-    /* Google Fonts for Handwriting */
-    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
-
-    :root {
-        --yap-blue-dark: rgba(10, 20, 40, 0.7);
-        --yap-blue-light: rgba(30, 60, 100, 0.4);
-        --yap-border: rgba(59, 130, 246, 0.5);
-        --yap-glow: #3b82f6;
-        --scanner-green: rgba(34, 197, 94, 0.8);
-        --rimac-turquoise: #40E0D0;
-        --handwriting: 'Caveat', cursive;
+    /* Section Separation Laser */
+    .cyber-divider {
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 105, 180, 0.8) 50%, transparent 100%);
+        box-shadow: 0 0 20px rgba(255, 105, 180, 0.9), 0 0 40px rgba(255, 105, 180, 0.4);
+        position: relative;
+        margin: 3rem 0;
+        z-index: 50;
+    }
+    .cyber-divider::after {
+        content: ''; position: absolute; left: 50%; top: -4px; width: 100px; height: 10px;
+        background: rgba(255, 105, 180, 0.9); filter: blur(8px); transform: translateX(-50%);
     }
 
-    /* Container for the dynamic background */
-    #lower-matrix-container {
+    /* Dynamic Middle Section Container */
+    #middle-matrix {
         position: relative;
-        width: 100%;
-        min-height: 800px;
-        padding-bottom: 4rem;
+        width: 100vw;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 4rem 2rem;
         overflow: hidden;
     }
 
     /* Hardware Accelerated Canvas */
     #node-canvas {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        z-index: 0;
-        pointer-events: none;
-        opacity: 0.6;
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
     }
 
-    /* -------------------------------------- */
-    /* YAP TERMINAL: Blue Shifting Aesthetics */
-    /* -------------------------------------- */
+    /* ========================================================================= */
+    /* LEFT GRID: DAILY YAP TERMINAL                                             */
+    /* ========================================================================= */
     .yap-terminal {
-        background: linear-gradient(135deg, var(--yap-blue-dark), var(--yap-blue-light));
+        position: relative;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 58, 138, 0.5), rgba(15, 23, 42, 0.85));
+        background-size: 200% 200%;
+        animation: ocean-shift 8s ease infinite;
         backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--yap-border);
+        border: 1px solid rgba(59, 130, 246, 0.4);
         box-shadow: 0 0 30px rgba(59, 130, 246, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.8);
-        position: relative;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 10;
         overflow: hidden;
-        animation: blue-shift 8s infinite alternate ease-in-out;
+    }
+    
+    /* Green Glow Override on Hover */
+    .yap-terminal:hover {
+        border-color: rgba(74, 222, 128, 0.9);
+        box-shadow: 0 0 50px rgba(74, 222, 128, 0.4), inset 0 0 30px rgba(74, 222, 128, 0.1);
+    }
+    .yap-terminal:hover .yap-glitch-text {
+        color: #4ade80; text-shadow: 0 0 10px rgba(74, 222, 128, 0.8);
     }
 
-    @keyframes blue-shift {
-        0% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.1), inset 0 0 20px rgba(0,0,0,0.8); border-color: rgba(59, 130, 246, 0.3); }
-        100% { box-shadow: 0 0 50px rgba(59, 130, 246, 0.4), inset 0 0 30px rgba(0,0,0,0.9); border-color: rgba(96, 165, 250, 0.7); }
+    @keyframes ocean-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
-    /* Green Scanner Sweep (Triggered on Group Hover) */
-    .scanner-sweep {
-        position: absolute;
-        top: -100%; left: 0;
-        width: 100%; height: 20px;
-        background: linear-gradient(to bottom, transparent, var(--scanner-green), transparent);
-        opacity: 0;
-        pointer-events: none;
-        z-index: 20;
-        transition: opacity 0.3s;
+    /* Styled Barcode Matrix */
+    .sci-fi-barcode {
+        display: flex; height: 35px; gap: 2px; align-items: flex-end; opacity: 0.7;
     }
-    .group-yap:hover .scanner-sweep {
-        opacity: 1;
-        animation: scan-down 3s linear infinite;
-    }
-    @keyframes scan-down {
-        0% { top: -10%; }
-        100% { top: 110%; }
+    .bar { background: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.6); }
+    .bar-1 { width: 2px; height: 100%; } .bar-2 { width: 4px; height: 100%; }
+    .bar-3 { width: 1px; height: 80%; } .bar-4 { width: 6px; height: 100%; }
+    .bar-5 { width: 3px; height: 90%; } .bar-6 { width: 2px; height: 60%; }
+
+    /* Advanced CSS Masking (Chamfered Cyberpunk Edges) */
+    .zorua-cut {
+        clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
+        filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.6));
     }
 
-    /* CSS Barcode Generation */
-    .css-barcode {
-        display: flex;
-        gap: 2px;
-        height: 30px;
-        opacity: 0.7;
+    /* CLI Input Override */
+    .cli-input {
+        background: transparent; border: none; outline: none; color: #4ade80;
+        font-family: 'Share Tech Mono', monospace; width: 60%; caret-color: #4ade80;
     }
-    .css-barcode div { background-color: #60a5fa; height: 100%; }
-    .css-barcode div:nth-child(1) { width: 3px; }
-    .css-barcode div:nth-child(2) { width: 1px; }
-    .css-barcode div:nth-child(3) { width: 4px; }
-    .css-barcode div:nth-child(4) { width: 2px; }
-    .css-barcode div:nth-child(5) { width: 1px; }
-    .css-barcode div:nth-child(6) { width: 3px; }
-    .css-barcode div:nth-child(7) { width: 5px; }
-    .css-barcode div:nth-child(8) { width: 2px; }
-    .css-barcode div:nth-child(9) { width: 1px; }
-    .css-barcode div:nth-child(10) { width: 3px; }
+    .cli-input::placeholder { color: rgba(74, 222, 128, 0.3); }
 
-    /* Terminal Input Glitch/Blink */
-    .terminal-caret {
-        display: inline-block;
-        width: 8px;
-        height: 15px;
-        background-color: #60a5fa;
-        animation: caret-blink 1s step-end infinite;
-        vertical-align: middle;
-        margin-left: 4px;
+    /* ========================================================================= */
+    /* RIGHT GRID: STICKERS & RIMAC                                              */
+    /* ========================================================================= */
+    
+    .scatter-zone { position: relative; min-height: 180px; z-index: 20; }
+    
+    /* Notebook Sticker Emulation */
+    .notebook-sticker {
+        position: absolute; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.6));
+        transition: transform 0.2s ease; cursor: pointer;
     }
-    @keyframes caret-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .notebook-sticker:hover { z-index: 50; filter: drop-shadow(0 10px 15px rgba(255,105,180,0.6)); }
 
-    #yap-input {
-        background: transparent; border: none; outline: none;
-        color: #93c5fd; font-family: 'Share Tech Mono', monospace;
-        width: 100px;
-    }
-
-    /* -------------------------------------- */
-    /* RIMAC SIMPING: Turquoise & Sparkles    */
-    /* -------------------------------------- */
-    .rimac-terminal {
-        background: rgba(10, 15, 15, 0.6);
+    /* Secondary Glassmorphism (Rimac Garage) */
+    .garage-terminal {
+        background: rgba(10, 5, 15, 0.6);
         backdrop-filter: blur(12px);
-        border: 1px dashed var(--rimac-turquoise);
-        box-shadow: 0 0 20px rgba(64, 224, 208, 0.1);
-        position: relative;
+        border: 1px dashed rgba(64, 224, 208, 0.4);
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         z-index: 10;
-        transition: all 0.3s;
-    }
-    .rimac-terminal:hover {
-        box-shadow: 0 0 30px rgba(64, 224, 208, 0.3);
     }
 
-    .handwriting-title {
-        font-family: var(--handwriting);
-        color: var(--rimac-turquoise);
-        font-size: 2.5rem;
-        transform: rotate(-3deg);
-        display: inline-block;
-        text-shadow: 0 0 10px rgba(64, 224, 208, 0.5);
-    }
-
-    /* Sparkle Animations (No glow, pure sparkle) */
-    .sparkle-container { position: relative; display: inline-block; }
-    .sparkle {
-        position: absolute;
-        width: 8px; height: 8px;
-        background: var(--rimac-turquoise);
-        clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-        animation: twinkle 2s infinite ease-in-out;
-    }
-    .sp-1 { top: -10px; left: -15px; animation-delay: 0s; transform: scale(1.2); }
-    .sp-2 { top: 10px; right: -20px; animation-delay: 0.5s; transform: scale(0.8); }
-    .sp-3 { bottom: 0px; left: -25px; animation-delay: 1s; transform: scale(1); }
-
-    @keyframes twinkle {
-        0%, 100% { opacity: 0.2; transform: scale(0.5) rotate(0deg); }
-        50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
-    }
-
-    /* Image Framing */
+    /* Framed Interactive Media */
     .rimac-frame {
-        border: 2px solid var(--rimac-turquoise);
-        padding: 4px;
-        background: rgba(0,0,0,0.5);
-        border-radius: 4px;
-        overflow: hidden;
-        cursor: pointer;
+        border: 3px solid #1e293b; border-radius: 4px; padding: 4px; background: #000;
+        box-shadow: 0 0 20px rgba(64, 224, 208, 0.3); transition: all 0.3s ease;
     }
-    .rimac-frame img {
-        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .rimac-frame:hover img {
-        transform: scale(1.1);
+    .rimac-frame:hover {
+        border-color: #40e0d0; transform: scale(1.02); box-shadow: 0 0 30px rgba(64, 224, 208, 0.6);
     }
 
-    /* Small Sticker Formatting */
-    .mini-sticker {
-        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
-        transition: transform 0.2s;
+    /* Sparkle Generator Engine */
+    .handwriting-title {
+        font-family: 'Caveat', cursive; font-size: 2.5rem; color: #40e0d0;
+        text-shadow: 0 0 15px rgba(64, 224, 208, 0.8); position: relative; display: inline-block;
     }
-    .mini-sticker:hover { transform: scale(1.15) rotate(5deg); }
+    .sparkle-node {
+        position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%;
+        box-shadow: 0 0 10px 2px #40e0d0, 0 0 20px 4px rgba(255, 255, 255, 0.8);
+        opacity: 0; pointer-events: none; animation: pop-sparkle var(--dur) ease-in-out infinite var(--del);
+    }
+    .sparkle-node::before, .sparkle-node::after {
+        content: ''; position: absolute; background: #fff; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+    .sparkle-node::before { width: 100%; height: 2px; }
+    .sparkle-node::after { width: 2px; height: 100%; }
 
+    @keyframes pop-sparkle {
+        0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1.5) rotate(90deg); }
+    }
 </style>
 
-<section id="lower-matrix-container" class="flex justify-center">
-    
+<div class="cyber-divider"></div>
+
+<section id="middle-matrix">
     <canvas id="node-canvas"></canvas>
 
-    <div class="w-[95%] max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-8 relative z-10 pt-4">
-
-        <div class="col-span-1 md:col-span-7 flex flex-col">
+    <div class="relative z-10 w-[95%] max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="yap-terminal lg:col-span-7 rounded-2xl p-8 flex flex-col justify-between min-h-[400px]">
             
-            <div class="yap-terminal group-yap rounded-2xl p-6 md:p-8 min-h-[400px] flex flex-col justify-between">
-                
-                <div class="scanner-sweep"></div>
+            <div class="absolute top-4 right-4 w-24 h-24 bg-pink-500/20 p-1 zorua-cut">
+                <img src="zorua.png" alt="Zorua Guard" class="w-full h-full object-cover zorua-cut opacity-90">
+            </div>
 
-                <div class="flex justify-between items-start relative">
-                    <div>
-                        <h2 class="text-3xl md:text-5xl font-extrabold text-blue-200 tracking-tighter" style="text-shadow: 0 0 15px var(--yap-glow);">
-                            > THE DAILY YAP
-                        </h2>
-                        <p class="text-blue-400/70 text-sm font-mono mt-1 opacity-80" id="yap-subtitle">
-                            </p>
-                    </div>
+            <div class="z-20 pt-4">
+                <h2 id="yap-typewriter" class="text-3xl md:text-5xl font-extrabold text-blue-400 tracking-widest yap-glitch-text transition-colors duration-500 h-[60px]">
+                    </h2>
+                <p class="text-blue-300/60 font-mono text-sm mt-2 opacity-80">> prolly not daily. i try c:</p>
+            </div>
 
-                    <div class="w-16 h-16 md:w-20 md:h-20 overflow-hidden rounded-xl border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.3)] bg-black/50 rotate-3 z-30">
-                        <img src="zorua-corner.png" alt="Zorua" class="w-full h-full object-cover">
-                    </div>
+            <div class="z-20 mt-12 bg-black/60 border border-blue-500/30 p-4 rounded-lg shadow-inner">
+                <p class="text-[10px] md:text-xs text-blue-400/50 uppercase tracking-widest mb-3 border-b border-blue-500/20 pb-2">
+                    // Auth_Required: write 'yappity' to gain access to the daily yap
+                </p>
+                <div class="flex items-center gap-3 text-sm md:text-base">
+                    <span class="text-green-400 font-bold drop-shadow-[0_0_8px_rgba(74,222,128,0.8)]">shinx@uwu: ~#</span>
+                    <input type="text" id="yap-cli" class="cli-input" placeholder="awaiting syntax..." autocomplete="off" spellcheck="false">
                 </div>
+                <p id="cli-error" class="text-red-500 text-xs mt-2 hidden glow-text-red font-mono">ERR: Invalid syntax. Payload rejected.</p>
+            </div>
 
-                <div class="flex-1 my-8 text-blue-100/80 font-mono text-sm leading-relaxed overflow-hidden">
-                    <div id="yap-console-output" class="flex flex-col gap-2">
-                        <p class="text-green-400 opacity-0 animate-[fadeIn_0.1s_ease-in_forwards_1s]">> Initializing Yap Subroutines...</p>
-                        <p class="text-green-400 opacity-0 animate-[fadeIn_0.1s_ease-in_forwards_2s]">> Loading CTF frameworks [OK]</p>
-                        <p class="text-green-400 opacity-0 animate-[fadeIn_0.1s_ease-in_forwards_3s]">> Syncing Markdown nodes [OK]</p>
-                    </div>
+            <div class="z-20 mt-8 flex justify-between items-end">
+                <div class="sci-fi-barcode">
+                    <div class="bar bar-1"></div><div class="bar bar-2"></div><div class="bar bar-1"></div>
+                    <div class="bar bar-4"></div><div class="bar bar-3"></div><div class="bar bar-2"></div>
+                    <div class="bar bar-6"></div><div class="bar bar-1"></div><div class="bar bar-5"></div>
+                    <div class="bar bar-2"></div><div class="bar bar-1"></div><div class="bar bar-4"></div>
                 </div>
-
-                <div class="border-t border-blue-500/30 pt-4 flex flex-col gap-2 relative z-30">
-                    <p class="text-[10px] text-blue-300/60 uppercase tracking-widest">write "yappity" to gain access to the daily yap</p>
-                    
-                    <div class="flex items-center text-lg md:text-xl">
-                        <span class="text-blue-400 font-bold mr-3">shinx@uwu: ~#</span>
-                        <input type="text" id="yap-input" autocomplete="off" spellcheck="false" maxlength="15">
-                        <span class="terminal-caret"></span>
-                    </div>
-                </div>
-
-                <div class="absolute bottom-4 left-4 flex items-end gap-2">
-                    <div class="css-barcode">
-                        <div></div><div></div><div></div><div></div><div></div>
-                        <div></div><div></div><div></div><div></div><div></div>
-                    </div>
-                    <span class="text-[8px] text-blue-500/50 font-mono rotate-[-90deg] mb-3 -ml-2">AUTH-V2</span>
-                </div>
-
+                <span class="text-blue-500/40 text-[10px] font-mono tracking-widest">SYS_NODE_01 // SECURE</span>
             </div>
         </div>
 
-        <div class="col-span-1 md:col-span-5 flex flex-col gap-6">
-
-            <div class="w-full flex justify-end gap-4 flex-wrap px-4 py-2 min-h-[80px]">
-                <img src="sticker1.png" alt="Sticker" class="mini-sticker w-12 h-12 object-contain" style="transform: rotate(-10deg) translateY(10px);">
-                <img src="sticker2.png" alt="Sticker" class="mini-sticker w-14 h-14 object-contain" style="transform: rotate(15deg);">
-                <img src="sticker3.png" alt="Sticker" class="mini-sticker w-10 h-10 object-contain" style="transform: rotate(5deg) translateY(-5px);">
-                <img src="sticker4.png" alt="Sticker" class="mini-sticker w-16 h-16 object-contain" style="transform: rotate(-5deg) translateY(5px);">
+        <div class="lg:col-span-5 flex flex-col gap-6">
+            
+            <div class="scatter-zone w-full">
+                <img src="sticker1.png" alt="S1" class="notebook-sticker w-16 md:w-20" style="top: 10%; left: 5%; transform: rotate(-15deg);">
+                <img src="sticker2.png" alt="S2" class="notebook-sticker w-20 md:w-24" style="top: 40%; right: 10%; transform: rotate(22deg);">
+                <img src="sticker3.png" alt="S3" class="notebook-sticker w-14 md:w-16" style="top: 25%; left: 45%; transform: rotate(8deg);">
+                <img src="sticker4.png" alt="S4" class="notebook-sticker w-24 md:w-28" style="bottom: 5%; left: 20%; transform: rotate(-8deg);">
             </div>
 
-            <div class="rimac-terminal rounded-2xl p-6 flex flex-col items-center justify-center text-center mt-2">
+            <div class="garage-terminal w-full rounded-2xl p-6 flex flex-col items-center justify-center flex-1 relative">
                 
-                <a href="#" class="rimac-frame block w-full max-w-[280px] aspect-video mb-6 relative group">
-                    <img src="rimac-placeholder.png" alt="Rimac Concept" class="w-full h-full object-cover">
-                    
-                    <div class="absolute inset-0 bg-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <a href="#" class="block w-[80%] md:w-[90%] z-20" title="Access Rimac Gallery">
+                    <img src="rimac.png" alt="Rimac Concept" class="w-full h-auto object-cover rimac-frame">
                 </a>
 
-                <div class="sparkle-container">
-                    <div class="sparkle sp-1"></div>
-                    <div class="sparkle sp-2"></div>
-                    <div class="sparkle sp-3"></div>
-                    <h3 class="handwriting-title">Rimac simping</h3>
+                <div class="mt-6 z-20 relative">
+                    <h3 class="handwriting-title">
+                        Rimac simping
+                        <span class="sparkle-node" style="top: -10px; left: -10px; --dur: 1.2s; --del: 0s;"></span>
+                        <span class="sparkle-node" style="bottom: 5px; right: -20px; --dur: 1.8s; --del: 0.5s; transform: scale(0.8);"></span>
+                        <span class="sparkle-node" style="top: 50%; left: -25px; --dur: 1.5s; --del: 1.1s; transform: scale(0.6);"></span>
+                        <span class="sparkle-node" style="top: -5px; right: 20px; --dur: 2s; --del: 0.3s; transform: scale(1.2);"></span>
+                    </h3>
                 </div>
 
+                <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: linear-gradient(#40e0d0 1px, transparent 1px), linear-gradient(90deg, #40e0d0 1px, transparent 1px); background-size: 20px 20px;"></div>
             </div>
 
         </div>
-
     </div>
 </section>
 
 <script>
     /**
-     * MODULE 1: Subtitle Typewriter Effect
-     * Typing "> prolly not daily. i try c:" organically.
+     * MODULE: ADVANCED DOM DYNAMICS
      */
     document.addEventListener('DOMContentLoaded', () => {
-        const subtitleText = "> prolly not daily. i try c:";
-        const subtitleElement = document.getElementById('yap-subtitle');
-        let typeIndex = 0;
+        
+        // ---------------------------------------------------------
+        // 1. Dynamic Background Canvas Engine (Floating Cyber Nodes)
+        // ---------------------------------------------------------
+        const canvas = document.getElementById('node-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles;
 
-        function typeWriter() {
-            if (typeIndex < subtitleText.length) {
-                subtitleElement.innerHTML += subtitleText.charAt(typeIndex);
-                typeIndex++;
-                setTimeout(typeWriter, Math.random() * 50 + 50); // Random delay for human feel
+        function initCanvas() {
+            width = canvas.width = canvas.offsetWidth;
+            height = canvas.height = canvas.offsetHeight;
+            particles = [];
+            // Generate nodes based on screen width density
+            const density = Math.floor(width / 15); 
+            for (let i = 0; i < density; i++) {
+                particles.push(new Node());
             }
         }
-        // Start typing after 1 second
-        setTimeout(typeWriter, 1000);
-    });
 
-    /**
-     * MODULE 2: Terminal Input Logic
-     * Listens for the "yappity" command and executes redirect.
-     */
-    const yapInput = document.getElementById('yap-input');
-    const yapConsole = document.getElementById('yap-console-output');
+        class Node {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.radius = Math.random() * 2 + 0.5;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.4)'; // Blueish nodes
+                ctx.fill();
+            }
+        }
 
-    yapInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            const val = this.value.trim().toLowerCase();
-            this.value = ''; // Clear input
-
-            if(val === '') return;
-
-            // Log user input
-            const userLog = document.createElement('p');
-            userLog.className = 'text-blue-300 mt-2';
-            userLog.textContent = `shinx@uwu: ~# ${val}`;
-            yapConsole.appendChild(userLog);
-
-            // Command Verification
-            if (val === 'yappity') {
-                const successLog = document.createElement('p');
-                successLog.className = 'text-green-400 font-bold mt-1';
-                successLog.textContent = '> CLEARANCE ACCEPTED. Routing to database...';
-                yapConsole.appendChild(successLog);
+        function animateNodes() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
                 
-                yapInput.disabled = true;
-
-                // Execute Redirect to yap.html (or /yap if using Netlify pretty URLs)
-                setTimeout(() => {
-                    window.location.href = 'yap.html'; 
-                }, 1200);
-
-            } else {
-                const errLog = document.createElement('p');
-                errLog.className = 'text-red-400 mt-1';
-                errLog.textContent = `> ERR: Command '${val}' not recognized. Try 'yappity'.`;
-                yapConsole.appendChild(errLog);
-            }
-
-            // Auto-scroll to bottom of console
-            yapConsole.parentElement.scrollTop = yapConsole.parentElement.scrollHeight;
-        }
-    });
-
-    /**
-     * MODULE 3: Network Node Particle Engine (Dynamic Background)
-     * High-performance canvas rendering drawing stars/nodes and connecting lines.
-     */
-    const canvas = document.getElementById('node-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Resize canvas to container
-    function resizeCanvas() {
-        const container = document.getElementById('lower-matrix-container');
-        canvas.width = container.offsetWidth;
-        canvas.height = container.offsetHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const nodes = [];
-    const numNodes = 70; // Adjust density here
-    const maxDistance = 150; // Distance at which lines draw
-
-    class Node {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * 0.8;
-            this.vy = (Math.random() - 0.5) * 0.8;
-            this.radius = Math.random() * 2 + 1;
-        }
-
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-
-            // Bounce off edges
-            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-        }
-
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(96, 165, 250, 0.5)'; // Blue tint
-            ctx.fill();
-        }
-    }
-
-    // Initialize nodes
-    for (let i = 0; i < numNodes; i++) {
-        nodes.push(new Node());
-    }
-
-    function animateNodes() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Update and draw all nodes
-        for (let i = 0; i < nodes.length; i++) {
-            nodes[i].update();
-            nodes[i].draw();
-
-            // Connect nodes if they are close enough
-            for (let j = i + 1; j < nodes.length; j++) {
-                const dx = nodes[i].x - nodes[j].x;
-                const dy = nodes[i].y - nodes[j].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < maxDistance) {
-                    // Opacity based on distance
-                    const opacity = 1 - (distance / maxDistance);
-                    ctx.beginPath();
-                    ctx.moveTo(nodes[i].x, nodes[i].y);
-                    ctx.lineTo(nodes[j].x, nodes[j].y);
-                    ctx.strokeStyle = `rgba(255, 105, 180, ${opacity * 0.3})`; // Pink connection lines
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
+                // Draw connecting lines for network effect
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${1 - dist/100})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
                 }
             }
+            requestAnimationFrame(animateNodes);
         }
-        requestAnimationFrame(animateNodes);
-    }
-    
-    // Start engine
-    animateNodes();
 
-    // Keyframe utility for Tailwind (injecting custom fadeIn animation dynamically)
-    if (!document.getElementById('custom-keyframes')) {
-        const style = document.createElement('style');
-        style.id = 'custom-keyframes';
-        style.innerHTML = `
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(5px); }
-                to { opacity: 1; transform: translateY(0); }
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        animateNodes();
+
+        // ---------------------------------------------------------
+        // 2. JavaScript Driven Typewriter Effect
+        // ---------------------------------------------------------
+        const typeTarget = document.getElementById('yap-typewriter');
+        const textPayload = "> THE DAILY YAP";
+        let charIndex = 0;
+        
+        function typeWriter() {
+            if (charIndex < textPayload.length) {
+                typeTarget.innerHTML += textPayload.charAt(charIndex);
+                charIndex++;
+                // Add randomization to typing speed for humanized output
+                const speed = Math.random() * 100 + 50; 
+                setTimeout(typeWriter, speed);
+            } else {
+                // Keep the cursor blinking at the end
+                typeTarget.innerHTML += '<span class="cursor-blink font-mono">_</span>';
             }
-        `;
-        document.head.appendChild(style);
-    }
+        }
+        
+        // Delay onset so user sees the page load before typing starts
+        setTimeout(typeWriter, 800);
+
+        // ---------------------------------------------------------
+        // 3. Interactive CLI Prompt Authentication
+        // ---------------------------------------------------------
+        const cliInput = document.getElementById('yap-cli');
+        const cliError = document.getElementById('cli-error');
+
+        cliInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.trim().toLowerCase();
+                this.value = ''; // Clear input
+
+                if (command === 'yappity') {
+                    // Success Override
+                    cliError.classList.add('hidden');
+                    cliInput.disabled = true;
+                    cliInput.placeholder = "AUTHORIZATION ACCEPTED. ROUTING...";
+                    cliInput.style.color = "#4ade80"; // Lock green
+                    
+                    // Route to pretty URL via Netlify
+                    setTimeout(() => {
+                        window.location.href = '/yap';
+                    }, 1200);
+                } else if (command !== '') {
+                    // Failure State
+                    cliError.classList.remove('hidden');
+                    // Shake effect on input
+                    this.parentElement.style.transform = "translateX(10px)";
+                    setTimeout(() => this.parentElement.style.transform = "translateX(-10px)", 50);
+                    setTimeout(() => this.parentElement.style.transform = "translateX(0)", 100);
+                }
+            }
+        });
+    });
 </script>
     </body>
 </html>
