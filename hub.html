@@ -348,8 +348,440 @@
         </section>
 
     </main>
+<div class="w-full flex items-center justify-center py-12 relative z-20">
+    <div class="h-[1px] w-full max-w-6xl bg-gradient-to-r from-transparent via-pink-500/50 to-transparent relative">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-[#050505] border border-pink-500/50 rotate-45"></div>
+        <div class="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-pink-500 shadow-[0_0_10px_#ff69b4] rotate-45"></div>
+        <div class="absolute top-1/2 right-1/3 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-pink-500 shadow-[0_0_10px_#ff69b4] rotate-45"></div>
+    </div>
+</div>
 
-    <div class="text-pink-900 text-xs mt-10 font-mono tracking-widest opacity-60 hover:opacity-100 transition-opacity cursor-default">:: SCROLL DOWN FOR MORE DATA ::</div>
+<style>
+    /* Google Fonts for Handwriting */
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
 
+    :root {
+        --yap-blue-dark: rgba(10, 20, 40, 0.7);
+        --yap-blue-light: rgba(30, 60, 100, 0.4);
+        --yap-border: rgba(59, 130, 246, 0.5);
+        --yap-glow: #3b82f6;
+        --scanner-green: rgba(34, 197, 94, 0.8);
+        --rimac-turquoise: #40E0D0;
+        --handwriting: 'Caveat', cursive;
+    }
+
+    /* Container for the dynamic background */
+    #lower-matrix-container {
+        position: relative;
+        width: 100%;
+        min-height: 800px;
+        padding-bottom: 4rem;
+        overflow: hidden;
+    }
+
+    /* Hardware Accelerated Canvas */
+    #node-canvas {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    /* -------------------------------------- */
+    /* YAP TERMINAL: Blue Shifting Aesthetics */
+    /* -------------------------------------- */
+    .yap-terminal {
+        background: linear-gradient(135deg, var(--yap-blue-dark), var(--yap-blue-light));
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--yap-border);
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.8);
+        position: relative;
+        z-index: 10;
+        overflow: hidden;
+        animation: blue-shift 8s infinite alternate ease-in-out;
+    }
+
+    @keyframes blue-shift {
+        0% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.1), inset 0 0 20px rgba(0,0,0,0.8); border-color: rgba(59, 130, 246, 0.3); }
+        100% { box-shadow: 0 0 50px rgba(59, 130, 246, 0.4), inset 0 0 30px rgba(0,0,0,0.9); border-color: rgba(96, 165, 250, 0.7); }
+    }
+
+    /* Green Scanner Sweep (Triggered on Group Hover) */
+    .scanner-sweep {
+        position: absolute;
+        top: -100%; left: 0;
+        width: 100%; height: 20px;
+        background: linear-gradient(to bottom, transparent, var(--scanner-green), transparent);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 20;
+        transition: opacity 0.3s;
+    }
+    .group-yap:hover .scanner-sweep {
+        opacity: 1;
+        animation: scan-down 3s linear infinite;
+    }
+    @keyframes scan-down {
+        0% { top: -10%; }
+        100% { top: 110%; }
+    }
+
+    /* CSS Barcode Generation */
+    .css-barcode {
+        display: flex;
+        gap: 2px;
+        height: 30px;
+        opacity: 0.7;
+    }
+    .css-barcode div { background-color: #60a5fa; height: 100%; }
+    .css-barcode div:nth-child(1) { width: 3px; }
+    .css-barcode div:nth-child(2) { width: 1px; }
+    .css-barcode div:nth-child(3) { width: 4px; }
+    .css-barcode div:nth-child(4) { width: 2px; }
+    .css-barcode div:nth-child(5) { width: 1px; }
+    .css-barcode div:nth-child(6) { width: 3px; }
+    .css-barcode div:nth-child(7) { width: 5px; }
+    .css-barcode div:nth-child(8) { width: 2px; }
+    .css-barcode div:nth-child(9) { width: 1px; }
+    .css-barcode div:nth-child(10) { width: 3px; }
+
+    /* Terminal Input Glitch/Blink */
+    .terminal-caret {
+        display: inline-block;
+        width: 8px;
+        height: 15px;
+        background-color: #60a5fa;
+        animation: caret-blink 1s step-end infinite;
+        vertical-align: middle;
+        margin-left: 4px;
+    }
+    @keyframes caret-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    #yap-input {
+        background: transparent; border: none; outline: none;
+        color: #93c5fd; font-family: 'Share Tech Mono', monospace;
+        width: 100px;
+    }
+
+    /* -------------------------------------- */
+    /* RIMAC SIMPING: Turquoise & Sparkles    */
+    /* -------------------------------------- */
+    .rimac-terminal {
+        background: rgba(10, 15, 15, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px dashed var(--rimac-turquoise);
+        box-shadow: 0 0 20px rgba(64, 224, 208, 0.1);
+        position: relative;
+        z-index: 10;
+        transition: all 0.3s;
+    }
+    .rimac-terminal:hover {
+        box-shadow: 0 0 30px rgba(64, 224, 208, 0.3);
+    }
+
+    .handwriting-title {
+        font-family: var(--handwriting);
+        color: var(--rimac-turquoise);
+        font-size: 2.5rem;
+        transform: rotate(-3deg);
+        display: inline-block;
+        text-shadow: 0 0 10px rgba(64, 224, 208, 0.5);
+    }
+
+    /* Sparkle Animations (No glow, pure sparkle) */
+    .sparkle-container { position: relative; display: inline-block; }
+    .sparkle {
+        position: absolute;
+        width: 8px; height: 8px;
+        background: var(--rimac-turquoise);
+        clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        animation: twinkle 2s infinite ease-in-out;
+    }
+    .sp-1 { top: -10px; left: -15px; animation-delay: 0s; transform: scale(1.2); }
+    .sp-2 { top: 10px; right: -20px; animation-delay: 0.5s; transform: scale(0.8); }
+    .sp-3 { bottom: 0px; left: -25px; animation-delay: 1s; transform: scale(1); }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.2; transform: scale(0.5) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+    }
+
+    /* Image Framing */
+    .rimac-frame {
+        border: 2px solid var(--rimac-turquoise);
+        padding: 4px;
+        background: rgba(0,0,0,0.5);
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .rimac-frame img {
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .rimac-frame:hover img {
+        transform: scale(1.1);
+    }
+
+    /* Small Sticker Formatting */
+    .mini-sticker {
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+        transition: transform 0.2s;
+    }
+    .mini-sticker:hover { transform: scale(1.15) rotate(5deg); }
+
+</style>
+
+<section id="lower-matrix-container" class="flex justify-center">
+    
+    <canvas id="node-canvas"></canvas>
+
+    <div class="w-[95%] max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-8 relative z-10 pt-4">
+
+        <div class="col-span-1 md:col-span-7 flex flex-col">
+            
+            <div class="yap-terminal group-yap rounded-2xl p-6 md:p-8 min-h-[400px] flex flex-col justify-between">
+                
+                <div class="scanner-sweep"></div>
+
+                <div class="flex justify-between items-start relative">
+                    <div>
+                        <h2 class="text-3xl md:text-5xl font-extrabold text-blue-200 tracking-tighter" style="text-shadow: 0 0 15px var(--yap-glow);">
+                            > THE DAILY YAP
+                        </h2>
+                        <p class="text-blue-400/70 text-sm font-mono mt-1 opacity-80" id="yap-subtitle">
+                            </p>
+                    </div>
+
+                    <div class="w-16 h-16 md:w-20 md:h-20 overflow-hidden rounded-xl border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.3)] bg-black/50 rotate-3 z-30">
+                        <img src="zorua-corner.png" alt="Zorua" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <div class="flex-1 my-8 text-blue-100/80 font-mono text-sm leading-relaxed overflow-hidden">
+                    <div id="yap-console-output" class="flex flex-col gap-2">
+                        <p class="text-green-400 opacity-0 animate-[fadeIn_0.1s_ease-in_forwards_1s]">> Initializing Yap Subroutines...</p>
+                        <p class="text-green-400 opacity-0 animate-[fadeIn_0.1s_ease-in_forwards_2s]">> Loading CTF frameworks [OK]</p>
+                        <p class="text-green-400 opacity-0 animate-[fadeIn_0.1s_ease-in_forwards_3s]">> Syncing Markdown nodes [OK]</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-blue-500/30 pt-4 flex flex-col gap-2 relative z-30">
+                    <p class="text-[10px] text-blue-300/60 uppercase tracking-widest">write "yappity" to gain access to the daily yap</p>
+                    
+                    <div class="flex items-center text-lg md:text-xl">
+                        <span class="text-blue-400 font-bold mr-3">shinx@uwu: ~#</span>
+                        <input type="text" id="yap-input" autocomplete="off" spellcheck="false" maxlength="15">
+                        <span class="terminal-caret"></span>
+                    </div>
+                </div>
+
+                <div class="absolute bottom-4 left-4 flex items-end gap-2">
+                    <div class="css-barcode">
+                        <div></div><div></div><div></div><div></div><div></div>
+                        <div></div><div></div><div></div><div></div><div></div>
+                    </div>
+                    <span class="text-[8px] text-blue-500/50 font-mono rotate-[-90deg] mb-3 -ml-2">AUTH-V2</span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-span-1 md:col-span-5 flex flex-col gap-6">
+
+            <div class="w-full flex justify-end gap-4 flex-wrap px-4 py-2 min-h-[80px]">
+                <img src="sticker1.png" alt="Sticker" class="mini-sticker w-12 h-12 object-contain" style="transform: rotate(-10deg) translateY(10px);">
+                <img src="sticker2.png" alt="Sticker" class="mini-sticker w-14 h-14 object-contain" style="transform: rotate(15deg);">
+                <img src="sticker3.png" alt="Sticker" class="mini-sticker w-10 h-10 object-contain" style="transform: rotate(5deg) translateY(-5px);">
+                <img src="sticker4.png" alt="Sticker" class="mini-sticker w-16 h-16 object-contain" style="transform: rotate(-5deg) translateY(5px);">
+            </div>
+
+            <div class="rimac-terminal rounded-2xl p-6 flex flex-col items-center justify-center text-center mt-2">
+                
+                <a href="#" class="rimac-frame block w-full max-w-[280px] aspect-video mb-6 relative group">
+                    <img src="rimac-placeholder.png" alt="Rimac Concept" class="w-full h-full object-cover">
+                    
+                    <div class="absolute inset-0 bg-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </a>
+
+                <div class="sparkle-container">
+                    <div class="sparkle sp-1"></div>
+                    <div class="sparkle sp-2"></div>
+                    <div class="sparkle sp-3"></div>
+                    <h3 class="handwriting-title">Rimac simping</h3>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<script>
+    /**
+     * MODULE 1: Subtitle Typewriter Effect
+     * Typing "> prolly not daily. i try c:" organically.
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+        const subtitleText = "> prolly not daily. i try c:";
+        const subtitleElement = document.getElementById('yap-subtitle');
+        let typeIndex = 0;
+
+        function typeWriter() {
+            if (typeIndex < subtitleText.length) {
+                subtitleElement.innerHTML += subtitleText.charAt(typeIndex);
+                typeIndex++;
+                setTimeout(typeWriter, Math.random() * 50 + 50); // Random delay for human feel
+            }
+        }
+        // Start typing after 1 second
+        setTimeout(typeWriter, 1000);
+    });
+
+    /**
+     * MODULE 2: Terminal Input Logic
+     * Listens for the "yappity" command and executes redirect.
+     */
+    const yapInput = document.getElementById('yap-input');
+    const yapConsole = document.getElementById('yap-console-output');
+
+    yapInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const val = this.value.trim().toLowerCase();
+            this.value = ''; // Clear input
+
+            if(val === '') return;
+
+            // Log user input
+            const userLog = document.createElement('p');
+            userLog.className = 'text-blue-300 mt-2';
+            userLog.textContent = `shinx@uwu: ~# ${val}`;
+            yapConsole.appendChild(userLog);
+
+            // Command Verification
+            if (val === 'yappity') {
+                const successLog = document.createElement('p');
+                successLog.className = 'text-green-400 font-bold mt-1';
+                successLog.textContent = '> CLEARANCE ACCEPTED. Routing to database...';
+                yapConsole.appendChild(successLog);
+                
+                yapInput.disabled = true;
+
+                // Execute Redirect to yap.html (or /yap if using Netlify pretty URLs)
+                setTimeout(() => {
+                    window.location.href = 'yap.html'; 
+                }, 1200);
+
+            } else {
+                const errLog = document.createElement('p');
+                errLog.className = 'text-red-400 mt-1';
+                errLog.textContent = `> ERR: Command '${val}' not recognized. Try 'yappity'.`;
+                yapConsole.appendChild(errLog);
+            }
+
+            // Auto-scroll to bottom of console
+            yapConsole.parentElement.scrollTop = yapConsole.parentElement.scrollHeight;
+        }
+    });
+
+    /**
+     * MODULE 3: Network Node Particle Engine (Dynamic Background)
+     * High-performance canvas rendering drawing stars/nodes and connecting lines.
+     */
+    const canvas = document.getElementById('node-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Resize canvas to container
+    function resizeCanvas() {
+        const container = document.getElementById('lower-matrix-container');
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const nodes = [];
+    const numNodes = 70; // Adjust density here
+    const maxDistance = 150; // Distance at which lines draw
+
+    class Node {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 0.8;
+            this.vy = (Math.random() - 0.5) * 0.8;
+            this.radius = Math.random() * 2 + 1;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // Bounce off edges
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(96, 165, 250, 0.5)'; // Blue tint
+            ctx.fill();
+        }
+    }
+
+    // Initialize nodes
+    for (let i = 0; i < numNodes; i++) {
+        nodes.push(new Node());
+    }
+
+    function animateNodes() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update and draw all nodes
+        for (let i = 0; i < nodes.length; i++) {
+            nodes[i].update();
+            nodes[i].draw();
+
+            // Connect nodes if they are close enough
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < maxDistance) {
+                    // Opacity based on distance
+                    const opacity = 1 - (distance / maxDistance);
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.strokeStyle = `rgba(255, 105, 180, ${opacity * 0.3})`; // Pink connection lines
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animateNodes);
+    }
+    
+    // Start engine
+    animateNodes();
+
+    // Keyframe utility for Tailwind (injecting custom fadeIn animation dynamically)
+    if (!document.getElementById('custom-keyframes')) {
+        const style = document.createElement('style');
+        style.id = 'custom-keyframes';
+        style.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(5px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+</script>
     </body>
 </html>
